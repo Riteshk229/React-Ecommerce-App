@@ -13,8 +13,8 @@ import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
+import { useState } from 'react';
 
 
 const Search = styled('div')(({ theme }) => ({
@@ -48,20 +48,103 @@ const Search = styled('div')(({ theme }) => ({
     '& .MuiInputBase-input': {
       padding: theme.spacing(1, 1, 1, 0),
       // vertical padding + font size from searchIcon
-      paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+      paddingLeft: `calc(1ch + ${theme.spacing(4)})`,
       transition: theme.transitions.create('width'),
-      width: '100%',
+      width: '65%',
       [theme.breakpoints.up('md')]: {
-        width: '20ch',
-      },
+        width: '50ch',
+        },
+        [theme.breakpoints.between("xs", "md")]: {
+          width: '30ch'
+      }
     },
   }));
 
 const Navbar = () => {
+    
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
+
+  const isMenuOpen = Boolean(anchorEl);
+  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+  const handleProfileMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMobileMenuClose = () => {
+    setMobileMoreAnchorEl(null);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    handleMobileMenuClose();
+  };
+
+  const handleMobileMenuOpen = (event) => {
+    setMobileMoreAnchorEl(event.currentTarget);
+  };
+
+  const menuId = 'primary-search-account-menu';
+  const renderMenu = (
+    <Menu
+      anchorEl={anchorEl}
+      anchorOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+      id={menuId}
+      keepMounted
+      transformOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+      open={isMenuOpen}
+      onClose={handleMenuClose}
+    >
+      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+    </Menu>
+  );
+
+  const mobileMenuId = 'primary-search-account-menu-mobile';
+  const renderMobileMenu = (
+    <Menu
+      anchorEl={mobileMoreAnchorEl}
+      anchorOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+      id={mobileMenuId}
+      keepMounted
+      transformOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+      open={isMobileMenuOpen}
+      onClose={handleMobileMenuClose}
+    >
+      <MenuItem>
+        <IconButton size="large" aria-label="show x new items in cart" color="inherit">
+        <Badge badgeContent={4} color="secondary">
+                <ShoppingCartIcon/>
+        </Badge>
+        </IconButton>
+              <p>Cart Items</p>
+          </MenuItem>
+          <MenuItem>
+              <IconButton size="large" aria-label="account of current user" color="inherit">
+                  <AccountCircle/>
+              </IconButton>
+              <p>Account</p>
+          </MenuItem>
+    </Menu>
+  );
+
     return (
         <>
-            <Box sx={{ flexGrow: 1}}>
-                <AppBar position="static">
+            <Box sx={{ flexGrow: 1}} aria-label='Nav Container'>
+                <AppBar position="static" aria-label='Nav'>
                     <Toolbar >
                         <Typography
                             variant='h6'
@@ -71,49 +154,77 @@ const Navbar = () => {
                         >
                             E-commerce
                         </Typography>
-                        <Search>
-                            <SearchIconWrapper>
-                                <SearchIcon/>
+
+                        <Search aria-label='search container'>
+                            <SearchIconWrapper aria-label='search wrapper'>
+                                <SearchIcon />
                             </SearchIconWrapper>
-                            <StyledInputBase></StyledInputBase>
+                            <StyledInputBase
+                                placeholder="Search…"
+                                inputProps={{ 'aria-label': 'search' }}
+                            />
                         </Search>
+
                         <Box sx={{ flexGrow: 1 }} />
-                        <Box sx={{display:{xs:"flex",md:"flex"}}}>
+
+                        <Box sx={{display:{xs:"none",md:"flex"}}}>
                             <IconButton
-                                size="large"
                                 aria-label="show X items in cart"
                                 color="inherit"
+                                sx={{mr:3}}
                             >
                                 <Badge badgeContent={4} color="secondary">
                                     <ShoppingCartIcon fontSize='large'/>
                                 </Badge>
+                                <Typography
+                                 variant='6'
+                                 noWrap
+                                 component='span'
+                                    sx={{ml: 2 }}
+                                >
+                                    Cart
+                                </Typography>
                             </IconButton>
                             <IconButton
-                                size="large"
                                 edge="end"
                                 aria-label="account of current user"
-                                // aria-controls={menuId}
+                                aria-controls={menuId}
                                 aria-haspopup="true"
-                                // onClick={handleProfileMenuOpen}
+                                onClick={handleProfileMenuOpen}
                                 color="inherit"
+                                sx={{mr:2}}
                             >
-                                <AccountCircle  fontSize='large'/>
+                                <AccountCircle fontSize='large' />
+                                <Typography
+                                 variant='6'
+                                 noWrap
+                                 component='span'
+                                    sx={{ ml: 2 }}
+                                >
+                                    User
+                                </Typography>
                             </IconButton>
                         </Box>
+
                         <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
                             <IconButton
                             size="large"
                             aria-label="show more"
-                            // aria-controls={mobileMenuId}
+                            aria-controls={mobileMenuId}
                             aria-haspopup="true"
-                            // onClick={handleMobileMenuOpen}
+                            onClick={handleMobileMenuOpen}
                             color="inherit"
                             >
                             <MoreIcon />
                             </IconButton>
                         </Box>
+
                     </Toolbar>
                 </AppBar>
+
+                {renderMenu}
+                {renderMobileMenu}
+                
             </Box>
         </>
     )
