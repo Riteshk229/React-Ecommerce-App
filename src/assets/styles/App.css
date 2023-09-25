@@ -2,8 +2,12 @@
   max-width: 100%;
   min-width: 550px;
   height: 100%;
-  background-color: aqua;
   margin: 0 ;
   padding: 0;
-  text-align: center;
+}
+
+.selectSort{
+  width: 100%;
+  text-align: right;
+  margin: 1% -10px 1%;
 }

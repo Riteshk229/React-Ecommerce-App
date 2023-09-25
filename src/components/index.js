@@ -1,10 +1,12 @@
 import App from "./App";
 import Loader from "./Loader";
-import Product from "./Products";
+import ProductListItem from "./Products";
+import EditProduct from "./EditMode";
     
 
 export {
     App,
     Loader,
-    Product
+    ProductListItem,
+    EditProduct
 }
