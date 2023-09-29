@@ -139,33 +139,37 @@ const Product = () => {
                         >
                             <CardContent sx={{ flex: '1 0 auto', textAlign: "left" }}>
 
-                                <FormControl fullWidth variant="standard" sx={{mb:3}}>
+                                <FormControl  fullWidth variant="standard" sx={{mb:3}}>
                                     <InputLabel sx={{fontWeight : 600, fontSize:20}}> Product Title </InputLabel>
                                     <Input
+                                        name="title"
                                         defaultValue={title}
                                         onChange={(e)=>setTitle(e.target.value)}
                                     />
                                 </FormControl>
 
-                                <FormControl variant="standard" sx={{mb:3}} >
-                                    <InputLabel sx={{fontWeight : 600, fontSize:20}}> Product Price </InputLabel>
+                                <FormControl  variant="standard" sx={{mb:3}} >
+                                    <InputLabel  sx={{fontWeight : 600, fontSize:20}}> Product Price </InputLabel>
                                     <Input
+                                        name = "price"
                                         startAdornment={<InputAdornment position="start"> Rs </InputAdornment>}
                                         defaultValue={Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format(Math.floor(price * 50.58 * 100) / 100)}
                                         onChange={(e)=>setPrice(e.target.value)}
                                     />
                                 </FormControl>
 
-                                <FormControl variant="standard" sx={{mb:3, ml: 3}} >
+                                <FormControl  variant="standard" sx={{mb:3, ml: 3}} >
                                     <InputLabel sx={{fontWeight : 600, fontSize:20}}> Rating </InputLabel>
                                     <Input
+                                        name="rating"
                                         defaultValue={rating}
                                         onChange={(e)=>setRating(e.target.value)}
                                     />
                                 </FormControl>
 
-                                <FormControl fullWidth variant="standard" sx={{mb:3}} >
+                                <FormControl  fullWidth variant="standard" sx={{mb:3}} >
                                     <TextField
+                                        name="descrip"
                                         label="Product Description"
                                         multiline
                                         defaultValue={description}
@@ -225,7 +229,7 @@ const Product = () => {
                                     color="text.tertiary"
                                     fontWeight={600}
                                 >
-                                     Rs {Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format(Math.floor(product.price * 50.58 * 100) / 100)}
+                                     Rs {Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format(Math.floor(product.price * 50 * 100) / 100)}
                                 </Typography>
                 
                                         

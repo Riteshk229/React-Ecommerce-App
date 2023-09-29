@@ -4,7 +4,7 @@ import { Route,Routes} from 'react-router-dom'
 import '../assets/styles/App.css'
 import Navbar from './Navbar'
 import Loader from './Loader'
-import { Home,NotFound, Profile } from '../pages'
+import { Home,NotFound, Profile, UserProfile } from '../pages'
 import Product from '../pages/Product'
 
 function App() {
@@ -15,7 +15,8 @@ function App() {
       <Routes>
         <Route path='' element={<Home />} />
         <Route path='/userId/:userId' element={<Profile />} />
-        <Route path='/product/:productID' element={<Product/>}/>
+        <Route path='/product/:productID' element={<Product />}/>
+        <Route path='/user/:id' element={<UserProfile />}/>
         <Route path='*' element={<NotFound />} />
       </Routes>
     </>

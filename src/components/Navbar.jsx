@@ -101,7 +101,17 @@ const Navbar = () => {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+      <MenuItem onClick={handleMenuClose}>
+        <Link
+          to={`/user/${8}`}
+          style={{
+            // textDecoration: "none",
+            color: "inherit"
+          }}
+        >
+          Profile
+        </Link>
+      </MenuItem>
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
     </Menu>
   );
@@ -130,13 +140,21 @@ const Navbar = () => {
         </Badge>
         </IconButton>
               <p>Cart Items</p>
-          </MenuItem>
+      </MenuItem>
+      <Link
+        to={`/user/${8}`}
+        style={{
+          textDecoration: "none",
+          color: "inherit"
+        }}
+      >
           <MenuItem>
               <IconButton size="large" aria-label="account of current user" color="inherit">
                   <AccountCircle/>
               </IconButton>
               <p>Account</p>
           </MenuItem>
+      </Link>
     </Menu>
   );
 
@@ -144,15 +162,24 @@ const Navbar = () => {
         <>
             <Box sx={{ flexGrow: 1}} aria-label='Nav Container'>
                 <AppBar position="static" aria-label='Nav'>
-                    <Toolbar >
-                        <Typography
-                            variant='h6'
-                            noWrap
-                            component='div'
-                            sx={{display: {xs:'none', sm:"block"},mr:2}}
-                        >
-                            E-commerce
-                        </Typography>
+            <Toolbar >
+              <Link
+                style={{
+                  textDecoration: "none",
+                  color: "inherit"
+              }}
+                to={"/"}
+              >
+              <Typography                            
+                  variant='h6'
+                  noWrap
+                  component='div'
+                  sx={{display: {xs:'none', sm:"block"},mr:2}}             
+                >
+                    E-commerce                        
+                </Typography>
+              </Link>
+                        
 
                         <Search aria-label='search container'>
                             <SearchIconWrapper aria-label='search wrapper'>
