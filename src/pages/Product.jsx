@@ -8,7 +8,6 @@ import Rating from '@mui/material/Rating';
 import StarOutlineIcon from '@mui/icons-material/StarOutline';
 import Typography from '@mui/material/Typography';
 import IconButton from "@mui/material/IconButton";
-import DeleteIcon from '@mui/icons-material/Delete'
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
@@ -21,6 +20,10 @@ import Input from "@mui/material/Input";
 import { styled } from '@mui/material/styles';
 
 import { Loader } from "../components";
+import { useDispatch, useSelector} from "react-redux";
+import {  fetchProductFromDB,editProductOnDB } from "../features/productSlice";
+import { toast } from "react-toastify";
+import { fetchProductsFromDB } from "../features/productsSlice";
 
 
 const VisuallyHiddenInput = styled('input')({
@@ -34,52 +37,30 @@ const VisuallyHiddenInput = styled('input')({
     whiteSpace: 'nowrap',
     width: 1,
   });
-
+  
 const Product = () => {
-    const [isLoading, setIsLoading] = useState(true);
-    const { productID } = useParams();
-    const [editModeActive, setEditModeActive] = useState("");
-    const [product, setProduct] = useState({
-        "id": productID,
-        "title": "",
-        "price": 0,
-        "description": "",
-        "category": "",
-        "image": "",
-        "rating": {
-            "rate": 0,
-            "count": 0
-        }
-    });
-
-    const [image, setImage] = useState("");
-    const [price, setPrice] = useState("");
-    const [title, setTitle] = useState("");
-    const [rating, setRating] = useState("");
-    const [description, setDescription] = useState("");
-
-
-
+    const  productID  = parseInt(useParams().productID);
+    const dispatch = useDispatch();
+    const isLoading = useSelector(state => state.product.loading);
+    const product = useSelector(state => state.product.product);
+    const [editModeActive, setEditModeActive] = useState(false);
+    const [title, setTitle] = useState(product.title);
+    const [image, setImage] = useState(product.image);
+    const [rating, setRating] = useState(product.rating | 0);
+    const [price, setPrice] = useState(product.price | 0);
+    const [description, setDescription] = useState(product.description);
+    
     useEffect(() => { 
-        const fetchProduct = async () => {
-            const response = await getProduct(productID);
-            setProduct(response);
-            setPrice(response.price)
-            setDescription(response.description)
-            setTitle(response.title);
-            setRating(response.rating.rate);
-            setImage(response.image);
-            setEditModeActive(false);
-            setIsLoading(false);
-        }
-        fetchProduct()
+        dispatch(fetchProductFromDB(productID));
+        setTitle(product.title);
+        setImage(product.image);
+        setPrice(product.price);
+        setRating(product.rating);
+        setDescription(product.description);
 
-    }, []);
-    console.log("Title", title);
-    console.log("image", image);
-    console.log("price", price);
-    console.log("rating", rating);
-    console.log("description", description);
+    }, [editModeActive,dispatch]);
+
+
 
     const handleImageChange = (e) => {
         console.log(e.target.files);
@@ -87,6 +68,25 @@ const Product = () => {
     }
 
     const handleSubmit = () => {
+        const editedProduct = {
+            title: title,
+            price: price,
+            description: description,
+            rating: rating,
+            image: !image
+            ? "https://png.pngtree.com/template/20220419/ourmid/pngtree-photo-coming-soon-abstract-admin-banner-image_1262901.jpg"
+              : image
+            }
+
+        toast.promise(
+            dispatch(editProductOnDB({ editedProduct, productID })),
+            {
+                pending: 'Edit en route..!!',
+                success: 'Edit Successfull..!!',
+                error: 'Error in editing product..!!!'
+              }
+        )
+        dispatch(fetchProductsFromDB());
         setEditModeActive(false);
     }
 
@@ -137,7 +137,7 @@ const Product = () => {
                                 border: "1px solid black"
                                 }}
                         >
-                            <CardContent sx={{ flex: '1 0 auto', textAlign: "left" }}>
+                            <CardContent sx={{ flex: '1 0 auto', textAlign: "left" ,height:"100%"}}>
 
                                 <FormControl  fullWidth variant="standard" sx={{mb:3}}>
                                     <InputLabel sx={{fontWeight : 600, fontSize:20}}> Product Title </InputLabel>
@@ -153,8 +153,8 @@ const Product = () => {
                                     <Input
                                         name = "price"
                                         startAdornment={<InputAdornment position="start"> Rs </InputAdornment>}
-                                        defaultValue={Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format(Math.floor(price * 50.58 * 100) / 100)}
-                                        onChange={(e)=>setPrice(e.target.value)}
+                                        defaultValue={Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format(price*30)}
+                                        onChange={(e)=>setPrice(Math.floor(e.target.value)/30)}
                                     />
                                 </FormControl>
 
@@ -178,7 +178,7 @@ const Product = () => {
                                 </FormControl>
                                                                      
                                 <IconButton
-                                    onClick={()=>setEditModeActive(false)}
+                                    onClick={()=>handleSubmit()}
                                     size="large"
                                 >
                                     <SaveOutlinedIcon fontSize="large" color="info" />
@@ -206,6 +206,7 @@ const Product = () => {
                 
                         <Box
                             sx={{
+                                position : "relative",
                                 height: 450,
                                 width: 800,
                                 ml: 4, mt: 4, mb: 1, p: 1,
@@ -229,7 +230,7 @@ const Product = () => {
                                     color="text.tertiary"
                                     fontWeight={600}
                                 >
-                                     Rs {Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format(Math.floor(product.price * 50 * 100) / 100)}
+                                     Rs {Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format(product.price * 30)}
                                 </Typography>
                 
                                         
@@ -240,7 +241,7 @@ const Product = () => {
                                 >                                              
                                     <Rating                                                  
                                         precision={0.1}
-                                        value={product.rating.rate}
+                                        value={product.rating}
                                         sx={{                                                       
                                             ml: 1,
                                             verticalAlign: "sub",
@@ -249,44 +250,38 @@ const Product = () => {
                                                 <StarOutlineIcon sx={{ color: "black" }} />
                                             }
                                             readOnly                                       
-                                    />
-                                                               
-                                    <Typography    
-                                        sx={{ ml: 2 }}
-                                        component="span"
-                                        variant='h6'                                               
-                                    > 
-                                        {product.rating.count}
-                                    </Typography>                                  
+                                    />                                 
                                 </Typography>
                                         
                                                   
                                 <Typography fontSize={25} sx={{ typography: { sm: 'body1', xs: 'body2' } }} >           
                                     {product.description}                                         
                                 </Typography>
-                
-                                           
-                                <Button                                            
-                                    variant="outlined"       
-                                    sx={{                   
-                                        color: "orange",
-                                        border: "2px solid orange",}}
-                                    startIcon={<AddCircleOutlineOutlinedIcon />}                                          
-                                >
-                                    Add To Cart...
-                                </Button>
-                                        
-                                <IconButton size="large">
-                                    <DeleteIcon fontSize="large" color="error" />
-                                </IconButton>
+                                               
+                                <Box
+                                    sx={{
+                                        position: "absolute",
+                                        bottom: 4,
+                                    }}
+                                >                            
+                                    <Button                                                            
+                                        variant="text"       
+                                        sx={{                                                           
+                                            color: "goldenrod",                                        
+                                            border: "2px solid orange",                                        
+                                        }}                                    
+                                        startIcon={<AddCircleOutlineOutlinedIcon />}                                                                         
+                                    >
+                                        Add To Cart..
+                                    </Button>                    
                                                                      
-                                <IconButton
-                                    onClick={()=>setEditModeActive(true)}
-                                    size="large"
-                                >
-                                    <EditOutlinedIcon fontSize="large" color="info" />
-                                </IconButton>
-              
+                                    <IconButton
+                                        onClick={() => setEditModeActive(true)}
+                                        size="large"
+                                    >
+                                        <EditOutlinedIcon fontSize="large" color="info" />
+                                    </IconButton>
+                                </Box>
                             </CardContent>  
                         </Box>    
                     </Box>

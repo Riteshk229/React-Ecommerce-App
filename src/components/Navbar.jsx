@@ -9,57 +9,15 @@ import Badge from '@mui/material/Badge';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import { Link } from "react-router-dom";
-import SearchIcon from '@mui/icons-material/Search';
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import { useState } from 'react';
-
-
-const Search = styled('div')(({ theme }) => ({
-    position: 'relative',
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: alpha(theme.palette.common.white, 0.55),
-    '&:hover': {
-      backgroundColor: alpha(theme.palette.common.white, 0.25),
-    },
-    marginRight: theme.spacing(2),
-    marginLeft: 0,
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing(3),
-      width: 'auto',
-    },
-  }));
-  
-  const SearchIconWrapper = styled('div')(({ theme }) => ({
-    padding: theme.spacing(0, 2),
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  }));
-  
-  const StyledInputBase = styled(InputBase)(({ theme }) => ({
-    color: 'inherit',
-    '& .MuiInputBase-input': {
-      padding: theme.spacing(1, 1, 1, 0),
-      // vertical padding + font size from searchIcon
-      paddingLeft: `calc(1ch + ${theme.spacing(4)})`,
-      transition: theme.transitions.create('width'),
-      width: '65%',
-      [theme.breakpoints.up('md')]: {
-        width: '50ch',
-        },
-        [theme.breakpoints.between("xs", "md")]: {
-          width: '30ch'
-      }
-    },
-  }));
+import { useSelector } from 'react-redux';
 
 const Navbar = () => {
+  const state = useSelector(state => state.products.list)
     
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
@@ -105,7 +63,7 @@ const Navbar = () => {
         <Link
           to={`/user/${8}`}
           style={{
-            // textDecoration: "none",
+            textDecoration: "none",
             color: "inherit"
           }}
         >
@@ -113,6 +71,19 @@ const Navbar = () => {
         </Link>
       </MenuItem>
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+
+      <MenuItem>
+        <Link
+          to={`/add`}
+          style={{
+            textDecoration: "none",
+            color: "inherit"
+          }}
+        >
+          Add Product
+        </Link>
+      </MenuItem>
+
     </Menu>
   );
 
@@ -133,14 +104,24 @@ const Navbar = () => {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem>
-        <IconButton size="large" aria-label="show x new items in cart" color="inherit">
-        <Badge badgeContent={4} color="secondary">
-                <ShoppingCartIcon/>
-        </Badge>
-        </IconButton>
-              <p>Cart Items</p>
-      </MenuItem>
+
+      <Link
+        to={'/user/cart'}
+        style={{
+          textDecoration: "none",
+          color: "inherit"
+        }}
+      >
+        <MenuItem>
+          <IconButton size="large" aria-label="show x new items in cart" color="inherit">
+            <Badge badgeContent={4} color="secondary">    
+              <ShoppingCartIcon />
+            </Badge>
+          </IconButton>       
+          <p>Cart Items</p>
+        </MenuItem>
+      </Link>
+
       <Link
         to={`/user/${8}`}
         style={{
@@ -148,26 +129,42 @@ const Navbar = () => {
           color: "inherit"
         }}
       >
-          <MenuItem>
-              <IconButton size="large" aria-label="account of current user" color="inherit">
-                  <AccountCircle/>
-              </IconButton>
-              <p>Account</p>
-          </MenuItem>
+          
+        <MenuItem>   
+          <IconButton size="large" aria-label="account of current user" color="inherit">   
+            <AccountCircle />
+          </IconButton>
+          <p>Account</p>
+        </MenuItem>
       </Link>
+
+      <Link
+        to={`/add`}
+        style={{
+          textDecoration: "none",
+          color: "inherit"
+        }}
+      >
+        <MenuItem>
+          <IconButton size="large" aria-label="account of current user" color="inherit">
+            <AddShoppingCartIcon />
+          </IconButton>
+          <p>Add Product</p>
+        </MenuItem>
+      </Link>
+
     </Menu>
   );
 
     return (
-        <>
-            <Box sx={{ flexGrow: 1}} aria-label='Nav Container'>
-                <AppBar position="static" aria-label='Nav'>
-            <Toolbar >
+      <>   
+        <Box sx={{ flexGrow: 1 }} aria-label='Nav Container'>     
+          <AppBar position="static" aria-label='Nav'>
+            <Toolbar >             
               <Link
                 style={{
                   textDecoration: "none",
-                  color: "inherit"
-              }}
+                  color: "inherit"}}
                 to={"/"}
               >
               <Typography                            
@@ -179,80 +176,80 @@ const Navbar = () => {
                     E-commerce                        
                 </Typography>
               </Link>
-                        
 
-                        <Search aria-label='search container'>
-                            <SearchIconWrapper aria-label='search wrapper'>
-                                <SearchIcon />
-                            </SearchIconWrapper>
-                            <StyledInputBase
-                                placeholder="Search…"
-                                inputProps={{ 'aria-label': 'search' }}
-                            />
-                        </Search>
+              <Box sx={{ flexGrow: 1 }} />
 
-                        <Box sx={{ flexGrow: 1 }} />
+              <Box sx={{display:{xs:"none",md:"flex"}}}>
+                            
+                <IconButton                      
+                  aria-label="show X items in cart"                        
+                  color="inherit"                           
+                  sx={{ mr: 3 }}     
+                >
+                  <Link
+                    to={'/user/cart'}
+                    style={{
+                      textDecoration: "none",
+                      color: "inherit"
+                    }}
+                  >
+                    <Badge badgeContent={4} color="secondary">                 
+                      <ShoppingCartIcon fontSize='large' />             
+                    </Badge>
+                  </Link>
+                                
+                  <Typography
+                        variant='6'
+                        noWrap
+                        component='span'
+                        sx={{ml: 2 }}
+                    >
+                          Cart
+                  </Typography>    
+                </IconButton>
 
-                        <Box sx={{display:{xs:"none",md:"flex"}}}>
-                            <IconButton
-                                aria-label="show X items in cart"
-                                color="inherit"
-                                sx={{mr:3}}
-                            >
-                                <Badge badgeContent={4} color="secondary">
-                                    <ShoppingCartIcon fontSize='large'/>
-                                </Badge>
-                                <Typography
-                                 variant='6'
-                                 noWrap
-                                 component='span'
-                                    sx={{ml: 2 }}
-                                >
-                                    Cart
-                                </Typography>
-                            </IconButton>
-                            <IconButton
-                                edge="end"
-                                aria-label="account of current user"
-                                aria-controls={menuId}
-                                aria-haspopup="true"
-                                onClick={handleProfileMenuOpen}
-                                color="inherit"
-                                sx={{mr:2}}
-                            >
-                                <AccountCircle fontSize='large' />
-                                <Typography
-                                 variant='6'
-                                 noWrap
-                                 component='span'
-                                    sx={{ ml: 2 }}
-                                >
-                                    User
-                                </Typography>
-                            </IconButton>
-                        </Box>
+                <IconButton
+                  edge="end"
+                  aria-label="account of current user"              
+                  aria-controls={menuId}
+                  aria-haspopup="true"
+                  onClick={handleProfileMenuOpen}
+                  color="inherit"
+                  sx={{mr:2}}
+                  >
+                                
+                  <AccountCircle fontSize='large' />
+                  
+                  <Typography            
+                    variant='6'
+                    noWrap
+                    component='span'
+                    sx={{ ml: 2 }}
+                  >           
+                    User
+                  </Typography>
+                </IconButton>
+              </Box>
 
-                        <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-                            <IconButton
-                            size="large"
-                            aria-label="show more"
-                            aria-controls={mobileMenuId}
-                            aria-haspopup="true"
-                            onClick={handleMobileMenuOpen}
-                            color="inherit"
-                            >
-                            <MoreIcon />
-                            </IconButton>
-                        </Box>
-
-                    </Toolbar>
-                </AppBar>
-
-                {renderMenu}
-                {renderMobileMenu}
-                
-            </Box>
-        </>
+              <Box sx={{ display: { xs: 'flex', md: 'none' } }}>  
+                <IconButton
+                  size="large"
+                  aria-label="show more"
+                  aria-controls={mobileMenuId}
+                  aria-haspopup="true"
+                  onClick={handleMobileMenuOpen}
+                  color="inherit"
+                >         
+                  <MoreIcon />    
+                </IconButton>
+              </Box>
+            </Toolbar>   
+          </AppBar>
+              
+          {renderMenu}
+          {renderMobileMenu}      
+        </Box>
+      </>
     )
 }
 

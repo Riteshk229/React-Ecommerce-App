@@ -1,8 +1,9 @@
 import { useParams } from "react-router-dom";
-
+import { useDispatch, useSelector } from "react-redux";
 const UserProfile = () => {
     const { id } = useParams();
-    
+    const state = useSelector(state => state.products);
+    console.log(state)
 
     return (
         <>

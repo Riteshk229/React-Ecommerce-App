@@ -1,47 +1,54 @@
 import { useEffect, useState } from "react";
-import { getProducts } from "../assets/JS";
-import { Loader, ProductListItem } from "../components";
-import Grid from "@mui/material/Grid";
+import { Loader, Products } from "../components";
 import FormControl from "@mui/material/FormControl/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Select  from "@mui/material/Select";
-import { MenuItem, OutlinedInput } from "@mui/material";
-import { Link } from "react-router-dom";
+import { IconButton, MenuItem, OutlinedInput } from "@mui/material";
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
+import {toast} from "react-toastify"
 
+import { useSelector, useDispatch } from "react-redux";
+import {
+    resetState,
+    sortByPrice,
+} from "../features/productsSlice";
+import { Scale } from "@mui/icons-material";
 
 const Home = () => {
-    const [sortBy, setSortBy] = useState('');
-    const[optionValue, setOptionValue] = useState([]);
-    const [data, setData] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const dispatch = useDispatch();
+    const [optionValue, setOptionValue] = useState([]);
+    const [xVisible, setXVisible] = useState("false");
+    const isLoading = useSelector(state => state.products.loading);
+
     const Options = [
         "",
         "asc",
         "desc",
     ];
-    console.log("data 7", data);
 
     const handleChange = (event) => {
         const {
           target: { value },
         } = event;
-        setOptionValue(
-            // On autofill we get a stringified value.
-            typeof value === 'string' ? value.split(',') : value,
-        );
-        setSortBy(value);
+        console.log(value);
+        setOptionValue(value);
+        if (value === 'asc' || value === "desc") {
+            dispatch(sortByPrice(value));
+            if (value == 'asc') {
+                toast.success(`Sorted by Price : Low to High.`);
+            } else {
+                toast.success(`Sorted by Price : High to Low.`);
+            }
+            setXVisible(true);
+        }
+        else {
+            dispatch(resetState());
+            toast.success(`Order Back to default..!!`);
+            setOptionValue("");
+            setXVisible(false)
+        }
       };
     
-    useEffect(() => {
-        setIsLoading(true);
-        const fetch = async () => {
-            const res = await getProducts(sortBy);
-            console.log("res", res);
-            setData(res);
-            setIsLoading(false);
-        }
-        fetch();
-    }, [sortBy]);
 
     if (isLoading) {
         return <Loader/>
@@ -50,11 +57,35 @@ const Home = () => {
         <>
             <div className="selectSort">
                 <FormControl sx={{
-                    m: 1, width: 300,
+                    position :"relative",
+                    m: 2, width: 300,
                     textTransform: "capitalize",
                     textAlign: "left"
                 }}>
-                <InputLabel>Sort By</InputLabel>
+                    <InputLabel>Sort By</InputLabel>
+                    <IconButton
+                        sx={{
+                            position: "absolute",
+                            right: 2,
+                            top: "-40px",
+                            width : "50px",
+                            height: "50px",
+                            "&:hover": {
+                                color: "black",
+                                fontWeight: 600,
+                                transform: 'scale(1.2)'
+                            }
+                        }}
+                        onClick={() => {
+                            dispatch(resetState());
+                            toast.success(`Order Back to default..!!`);
+                            setOptionValue("");
+                            setXVisible(false);
+                        }}
+                        size="small"
+                    >
+                        <CloseOutlinedIcon  sx={{visibility: `${xVisible ? "visible" : "hidden"}`}}/>
+                    </IconButton>
                     <Select
                         value={optionValue}
                         onChange={handleChange}
@@ -72,35 +103,7 @@ const Home = () => {
                 </Select>
                 </FormControl>
             </div>
-
-            <Grid
-                container
-                direction="row"
-                spacing={1}
-            >
-            {data.map((item, index) => {
-                return (
-                    <Grid
-                        item
-                        zeroMinWidth
-                        xl
-                        key={index}
-                    >
-                        <Link
-                            style={{
-                                textDecoration: "none",
-                                color: "inherit"
-                            }}
-                            to={`/product/${item.id}`}
-                        >
-                            <ProductListItem
-                                product={item}
-                            />                    
-                        </Link>
-                    </Grid>
-                )
-            })}
-            </Grid>
+            <Products />
         </>
     )
 }
