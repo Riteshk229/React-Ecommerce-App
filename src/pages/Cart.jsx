@@ -47,7 +47,8 @@ const Cart = (props) => {
             height: '90vh',
             display: 'flex',
             justifyContent: 'space-around',
-            alignItems: 'center'
+            alignItems: 'center',
+            padding : 5
             
           }}
         >
@@ -126,7 +127,7 @@ const Cart = (props) => {
                       {Intl
                         .NumberFormat("en-US", { maximumFractionDigits: 2 })
                         .format(
-                          item.product.price * 30
+                          item.product.price * 31
                         )}
                     </Typography>
                   </Typography>
@@ -163,7 +164,7 @@ const Cart = (props) => {
                 </CardContent>
                 
                     
-                <IconButton
+                {/* <IconButton
                   onClick={() => dispatch(deleteItemInCart(index))}
                   sx={{
                     position: "absolute",
@@ -176,7 +177,7 @@ const Cart = (props) => {
                   }}
                 >
                   <DeleteIcon fontSize='large' />
-                </IconButton>
+                </IconButton> */}
 
               </Card>
             ))}
@@ -202,7 +203,7 @@ const Cart = (props) => {
                   .format(
                     products
                       .reduce((total, item) => total + item.product.price * item.quantity, 0)
-                    * 30)}
+                    * 31)}
             </Typography>
           </Grid>
         </Grid>

@@ -104,7 +104,11 @@ const Products = () => {
                     to={`/products/${product.id}`}
                   >
                     {/* product info  starts*/}
-                    <CardContent sx={{ flex: '1 0 auto', textAlign: "left" }}>
+                    <CardContent
+                      sx={{
+                        flex: '1 0 auto',
+                        textAlign: "left"
+                      }}>
 
                       {/* display title */}
                       <Typography component="div" variant="h5" noWrap>
@@ -135,7 +139,7 @@ const Products = () => {
                           // formats price upto 2 decimal
                           Intl
                             .NumberFormat("en-US", { maximumFractionDigits: 2 })
-                            .format(product.price * 30)
+                            .format(product.price * 31)
                         }
                       </Typography>
 

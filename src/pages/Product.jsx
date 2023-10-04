@@ -235,8 +235,11 @@ const Product = () => {
                                     <Input
                                         name = "price"
                                         startAdornment={<InputAdornment position="start"> Rs </InputAdornment>}
-                                        defaultValue={Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format(price*30)}
-                                        onChange={(e)=>setPrice(Math.floor(e.target.value)/30)}
+                                        defaultValue={Intl
+                                            .NumberFormat("en-US", { maximumFractionDigits: 2 })
+                                            .format(price * 31)
+                                        }
+                                        onChange={(e)=>setPrice(Math.floor(e.target.value)/31)}
                                     />
                                 </FormControl>
                                 {/* product price end */}
@@ -342,7 +345,7 @@ const Product = () => {
                                     Rs {Intl
                                         // formating price upto 2 decimals
                                         .NumberFormat("en-US", { maximumFractionDigits: 2 })                                        
-                                        .format(product.price * 30
+                                        .format(product.price * 31
                                     )}   
                                 </Typography>
                                 {/* product price end */}
