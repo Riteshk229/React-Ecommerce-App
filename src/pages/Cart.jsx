@@ -1,5 +1,10 @@
-import React, { useEffect, useState } from 'react'
+// import React from 'react'
 import { connect, useDispatch, useSelector } from 'react-redux'
+
+// importing router dom component
+import { Link } from 'react-router-dom';
+
+// importing MUI Components
 import {
   Card,
   CardContent,
@@ -14,33 +19,35 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 
+// importing loader
 import { Loader } from '../components';
+
+// importing actions and reducers
 import {
   decreaseQuantity,
   deleteItemInCart,
-  fetchProductsInCart,
   increaseQuantity
-
 } from '../features';
-import { getProduct } from '../assets/JS';
-import { Link } from 'react-router-dom';
 
 const Cart = (props) => {
-  const dispatch = useDispatch();
-  const {products,cartItems} = props;
-  const isLoading = useSelector(state => state.cart.loading);
-
-  useEffect(() => {
-    getProduct();
-   }, [cartItems]);
   
+  // destructuring props
+  const { products } = props;
+
+  const dispatch = useDispatch();
+  const isLoading = useSelector(state => state.cart.loading);
+  
+  // loader
   if (isLoading) {
     <Loader/>
   }
+
   return (
     <>
+      
+      {/* if no item in cart render this */}
       {!products.length &&
-        <>
+        
         <Box
           sx={{
             width: '100vw',
@@ -52,27 +59,43 @@ const Cart = (props) => {
             
           }}
         >
-          <Typography variant='h3' sx={{position:'relative'}}>
+          
+          <Typography
+            variant='h3'
+            sx={{
+              position: 'relative'
+            }}>
             Cart is Empty. Checkout our Home page to Add items to cart.
-            <Link to={'/'}>
-              <Button variant='contained' sx={{
-                display: 'block',
-                position: 'absolute',
-                left: "40%",
-                fontSize: 40,
-                mt:10
-              }}
+            
+            <Link
+              to={'/'}
+            >
+
+              {/* home page button */}
+              <Button
+                variant='contained'
+                sx={{
+                  display: 'block',
+                  position: 'absolute',
+                  left: "40%",
+                  fontSize: 40,
+                  mt:10
+                }}
               >
                 Home Page
               </Button>
             </Link>
           </Typography>
         </Box>
-        </>
       }
 
+      {/* if items in cart render this */}
       {products.length > 0 &&
-        <Grid container spacing={2}
+        
+        // conatiner start
+        <Grid
+          container
+          spacing={2}
           sx={{
             mt: 5,
             pl: 10,
@@ -80,10 +103,18 @@ const Cart = (props) => {
             width: "100%",
           }}
         >
-          <Grid item sx={{
-            width: "80%",
-          }}>
+          {/* display cart item start*/}
+          <Grid
+            item
+            sx={{
+              width: "80%",
+            }}
+          >
+
+            {/* looping to  display cart items */}
             {products.map((item, index) => (
+
+              // cart item conatiner start
               <Card
                 key={index}
                 sx={{
@@ -93,7 +124,10 @@ const Cart = (props) => {
                   height: 180,
                   display: "flex",
                   justifyContent: "space-around",
-                }}>
+                }}
+              >
+
+                {/* display product image start*/}
                 <CardMedia
                   component="img"
                   sx={{
@@ -103,15 +137,24 @@ const Cart = (props) => {
                   image={item.product.image}
                   alt="CartItem.jpg"
                 />
+                {/* display product image ends */}
+                
+                {/* product info and action start */}
                 <CardContent
                   sx={{
                     width: "60%"
                   }}>
-                      
-                  <Typography variant='h6' mb={2} noWrap>
+                    
+                  {/* product title */}
+                  <Typography
+                    variant='h6'
+                    mb={2}
+                    noWrap
+                  >
                     {item.product.title}
                   </Typography>
 
+                  {/* product price */}
                   <Typography
                     variant='subtitle1'
                     mb={2} ml={2}
@@ -124,14 +167,17 @@ const Cart = (props) => {
                       ml={2}
                       component="span"
                     >
+                      {/* formatting price */}
                       {Intl
                         .NumberFormat("en-US", { maximumFractionDigits: 2 })
                         .format(
                           item.product.price * 31
                         )}
                     </Typography>
+
                   </Typography>
 
+                  {/* action button starts */}
                   <Typography
                     variant="body2"
                     component="div"
@@ -140,19 +186,23 @@ const Cart = (props) => {
                     }}
                     noWrap
                   >
-
+                    {/* plus button */}
                     <IconButton
                       onClick={() => { dispatch(increaseQuantity(item.product.id)) }}
                     >
                       <AddCircleOutlineIcon />
                     </IconButton>
                   
-
-                    <Typography variant='h5' mt={0.5} noWrap>
+                    {/* display current quantity */}
+                    <Typography
+                      variant='h5'
+                      mt={0.5}
+                      noWrap
+                    >
                       {item.quantity}
                     </Typography>
 
-
+                    {/* minus button */}
                     <IconButton
                       onClick={() => { dispatch(decreaseQuantity(item.product.id)) }}
                     >
@@ -160,12 +210,14 @@ const Cart = (props) => {
                     </IconButton>
 
                   </Typography>
+                  {/* action button ends */}
             
                 </CardContent>
+                {/* product info and action ends*/}
                 
-                    
-                {/* <IconButton
-                  onClick={() => dispatch(deleteItemInCart(index))}
+                {/*  Delete buttton */}
+                <IconButton
+                  onClick={() => dispatch(deleteItemInCart(item.product.id))}
                   sx={{
                     position: "absolute",
                     right: 0,
@@ -177,41 +229,63 @@ const Cart = (props) => {
                   }}
                 >
                   <DeleteIcon fontSize='large' />
-                </IconButton> */}
+                </IconButton>
 
               </Card>
-            ))}
-          </Grid>
+              // cart item conatiner ends
 
-          <Grid item
+            ))}
+
+          </Grid>
+          {/* display cart item ends*/}
+
+          {/* side bar to show total  start*/}
+          <Grid
+            item
             sx={{
               width: "20%",
               textAlign: "center",
             }}>
+            
+            {/* heading */}
             <Typography variant='h6' mt={5}  >
               SubTotal ({products.length} item) :
             </Typography>
           
+            {/* sub total start*/}
             <Typography variant='h4' m={3} sx={{
               display: 'flex',
               justifyContent: 'center',
            
             }}>
-              <Typography variant="" mr={3}> Rs </Typography>{
-                Intl
-                  .NumberFormat("en-US", { maximumFractionDigits: 2 })
-                  .format(
-                    products
-                      .reduce((total, item) => total + item.product.price * item.quantity, 0)
-                    * 31)}
+              {/* display total */}
+              <Typography
+                variant=""
+                mr={3}>
+                Rs
+              </Typography>
+              
+              {/* formatting price */}
+              {Intl
+                .NumberFormat("en-US", { maximumFractionDigits: 2 })
+                .format(
+                  products.reduce((total, item) => total + item.product.price * item.quantity, 0)
+                  * 31)
+              }
             </Typography>
+            {/* sub total start ends*/}
+
           </Grid>
+          {/* side bar to show total  ends*/}
+
         </Grid>
+        // conatiner ends
       }
     </>
   )
 }
 
+// sending props to component
 const mapStateToProp = (state, ownProp) => {
   const { userID } = ownProp;
   const products = state.cart.products;
@@ -224,10 +298,5 @@ const mapStateToProp = (state, ownProp) => {
   }
 }
 
-const mapDispatchToProps = (dispatch) => ({
-  getProducts: () => dispatch(fetchProductsInCart()),
-  getCartItems: (userId) => dispatch(fetchCartItemsOfUser(userId)),
-
-});
-
-export default connect(mapStateToProp, mapDispatchToProps)(Cart);
+// exporting Cart component
+export default connect(mapStateToProp)(Cart);

@@ -41,6 +41,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       newestOnTop={false}
       closeOnClick
       pauseOnHover
+      pauseOnFocusLoss
       theme="light"
     />
     

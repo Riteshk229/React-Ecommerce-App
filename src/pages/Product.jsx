@@ -59,6 +59,7 @@ const Product = () => {
     const navigate = useNavigate();
 
     // state variables
+    const addingErr = useSelector(state => state.cart.error.status);
     const  productID  = parseInt(useParams().productID);
     const isLoading = useSelector(state => state.product.loading);
     const product = useSelector(state => state.product.product);
@@ -90,14 +91,10 @@ const Product = () => {
     // function to handle add to cart action
     const handleAddToCart = (productID) => {
         // notification
-        toast.promise(
-            // dispatch add to cart action
-            dispatch(addItemIncart(productID)),
-            {
-                pending: "Adding to cart.!!",
-                error: "Failed to Add Product to Cart.!!",
-                success: "Product Added to Cart..!!",
-            });
+        dispatch(addItemIncart(productID))
+
+        // notification
+        toast.success("Product added to Cart..!!");
     }
 
     // function to handle image uplaod
@@ -106,7 +103,7 @@ const Product = () => {
         setImage(URL.createObjectURL(e.target.files[0]));
     }
 
-    // function to handle image uplaod
+    // function to handle submit button click
     const handleSubmit = () => {
         // new product
         const editedProduct = {
@@ -129,9 +126,7 @@ const Product = () => {
                 error: 'Error in editing product..!!!'
               }
         )
-        // reloads homepage to display changes
-        dispatch(fetchProductsFromDB());
-  
+        
         setEditModeActive(false);
     }
 

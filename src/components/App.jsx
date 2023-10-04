@@ -17,12 +17,10 @@ import {
 import {
   fetchCartItemsOfUser,
   fetchProductsFromDB,
-  fetchProductsInCart,
 } from '../features'
 
 // importing Styles
 import '../assets/styles/App.css'
-
 
 
 function App(props) {
@@ -32,14 +30,13 @@ function App(props) {
     getCartItems,
     getProducts,
     dispatch,
-    getProductsInCart
+    getProductsInCart,
   } = props;
 
   // fetching products and cart
   useEffect(() => {    
     getProducts();
     getCartItems(userID);
-    getProductsInCart();
   }, [dispatch]);
 
   return (
@@ -72,7 +69,6 @@ const mapStateToProp = (state,ownProp) => {
 const mapDispatchToProps = (dispatch) => ({ 
   getCartItems: (id) => dispatch(fetchCartItemsOfUser(id)),
   getProducts: () => dispatch(fetchProductsFromDB()),
-  getProductsInCart: () => dispatch(fetchProductsInCart())
 })
 
 // exporting App

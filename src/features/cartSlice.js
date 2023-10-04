@@ -1,6 +1,10 @@
-import { createSlice,createAsyncThunk, current } from "@reduxjs/toolkit";
+// importing redux methods
+import { createSlice, createAsyncThunk, current } from "@reduxjs/toolkit";
+// importing functions
 import { getCartItems } from "../assets/JS";
 
+
+// initial cart state
 const initialState = {    
     cartItems: [],
     products:[],
@@ -11,76 +15,65 @@ const initialState = {
     },
 }
 
+// fetches cart
 export const fetchCartItemsOfUser = createAsyncThunk(
+    // action name
     'carts/fetchCartItems',
+    // thunk middleware
     async (userId, { fulfillWithValue, rejectWithValue }) => {
         try {
+            // API Call
             const response = await getCartItems(userId);
+            // on success
             if (response.success) {
                 return fulfillWithValue(response.data[0]);
             } else {
                 return rejectWithValue(response.error)
-            }  
-        } catch (error) {
-            throw  rejectWithValue(error.message)
-        }
-    }  
-)
-
-export const fetchProductsInCart = createAsyncThunk(
-    'carts/fetchProductsIncart',
-    async (productID, { rejectWithValue,getState }) => {
-        try {
-            const cart = getState().cart.cartItems;
-            const products = getState().products.list;
-            const productinfo = cart.products;
-            const productList = productinfo.map((inCart,index) => {
-                const product = products.filter((product) => product.id === inCart.productId);
-                return {
-                    product: {
-                        id: index,
-                        price: product[0].price,
-                        title: product[0].title,
-                        image: product[0].image
-                    },
-                    quantity: inCart.quantity
-                }
-            });
-            console.log("fetc",productList)
-            return productList;
-        } catch (error) {
-            throw  rejectWithValue(error.message)
-        }
-    }  
-)
-
-export const addItemIncart = createAsyncThunk(
-    'carts/addItemIncart',
-    async (productID, {getState,dispatch}) => {
-        try {
-            const products = getState().products.list;
-            const product = products.filter((product) => product.id === productID);
-            // if (getState().cart.products.includes(product[0])) {
-            //     dispatch()
-            // }
-            return {
-                product: product[0],
-                quantity: 1
             }
+        // on error
         } catch (error) {
             throw  rejectWithValue(error.message)
         }
     }  
 )
 
-    
+// adds item to cart
+export const addItemIncart = createAsyncThunk(
+    // action name
+    'carts/addItemIncart',
+    // thunk middleware
+    async (productID, {getState,rejectWithValue,fulfillWithValue}) => {
+        try {
 
+            // get products
+            const products = getState().products.list;
+            // get current products
+            const product = products.filter((product) => product.id === productID);
+            // check if it exists in cart
+            const check = getState().cart.products.find(item => item.product.id === product[0].id);
+            
+            // if it doesn't exist create one
+            if (!check) {
+                return fulfillWithValue({
+                    product: product[0],
+                    quantity: 1
+                })
+            }
+
+        // on error 
+        } catch (error) {
+            throw  rejectWithValue(error.message)
+        }
+    }  
+)
+ 
+//  cartSlice
 export const cartSlice = createSlice({
     name: "cart",
     initialState,
     reducers: {
         increaseQuantity: (state, action) => {
-            console.log()
+
             state.products = state.products.map((product) => {
                 if (action.payload === product.product.id) {
                     product.quantity += 1;
@@ -89,11 +82,6 @@ export const cartSlice = createSlice({
             })
         },
         decreaseQuantity: (state, action) => {
-            state.products = state.products.filter((product, index) => {
-                if (product.quantity > 0) {
-                    return product
-                }
-            });
 
             state.products = state.products.map((product) => {
                 if (action.payload === product.product.id && product.quantity > 0) {
@@ -101,10 +89,16 @@ export const cartSlice = createSlice({
                 }
                 return product;
             })
+            
+            state.products = state.products.filter((product) => {
+                return product.product.id !== action.payload
+            })
         },
         deleteItemInCart: (state, action) => {
-            state.products = state.products.filter((product) => product.product.id !== action.payload)
-        }
+            state.products = state.products.filter((product) => {
+                return product.product.id !== action.payload
+            })
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(fetchCartItemsOfUser.fulfilled, (state, action) => {
@@ -125,45 +119,13 @@ export const cartSlice = createSlice({
                 message: action.error
             }
         })
-        builder.addCase(fetchProductsInCart.fulfilled, (state, action) => {
-            state.error = {
-                status: false,
-                message: ""
-            }
-            state.loading = false;
-            console.log("ac pay",action.payload);
-            state.products = action.payload;
-        })
-        builder.addCase(fetchProductsInCart.pending, (state) => {
-            state.loading = true;
-        })
-        builder.addCase(fetchProductsInCart.rejected, (state, action) => {
-            state.loading = false;
-            state.error = {
-                status: true,
-                message: action.error
-            }
-        })
         builder.addCase(addItemIncart.fulfilled, (state, action) => {
             state.error = {
                 status: false,
                 message: ""
             }
-            state.loading = false;
-            console.log(current(state));
-            if (state.products.includes(action.payload)) {
-                state.products = state.products.map((product) => {
-                    console.log(product);
-                    if (action.payload === product.product.id) {
-                        product.quantity += 1;
-                    }
-                return product;
-            
-                })
-            } else {
-                state.products.push(action.payload);
-            }
-            console.log(current(state));
+            state.products.push(action.payload);
+
         })
         builder.addCase(addItemIncart.pending, (state) => {
             state.loading = true;
@@ -181,7 +143,7 @@ export const cartSlice = createSlice({
 export const {
     decreaseQuantity,
     increaseQuantity,
-    deleteItemInCart
+    deleteItemInCart,
 } = cartSlice.actions;
 
 export default cartSlice.reducer;
