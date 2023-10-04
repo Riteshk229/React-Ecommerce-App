@@ -1,7 +1,9 @@
+// importing libraries
 import { useEffect } from 'react'
 import { connect} from 'react-redux'
 import { Route,Routes} from 'react-router-dom'
 
+// importing local components
 import { Navbar } from './index'
 import {
   Home,
@@ -11,26 +13,29 @@ import {
   Product
 } from '../pages'
 
+// importing actions and reducers for React-Redux
 import {
   fetchCartItemsOfUser,
   fetchProductsFromDB,
   fetchProductsInCart,
 } from '../features'
 
+// importing Styles
 import '../assets/styles/App.css'
 
 
 
 function App(props) {
-  console.log("app", props);
+
+  // destructuring props
   const { userID,
     getCartItems,
     getProducts,
     dispatch,
     getProductsInCart
   } = props;
-  console.log("app", userID);
 
+  // fetching products and cart
   useEffect(() => {    
     getProducts();
     getCartItems(userID);
@@ -39,9 +44,11 @@ function App(props) {
 
   return (
     <>
+      
       <Navbar 
         userID={userID}
       />
+      {/* Routes for diffrent Pages */}
       <Routes>
         <Route path='' element={<Home />} />
         <Route path='/products/:productID' element={<Product />}/>
@@ -53,6 +60,7 @@ function App(props) {
   )
 }
 
+// Sending  Props to App
 const mapStateToProp = (state,ownProp) => {
   const { userID } = ownProp;
   return {
@@ -60,10 +68,12 @@ const mapStateToProp = (state,ownProp) => {
   }
 }
 
+// Sending actions dispatch 
 const mapDispatchToProps = (dispatch) => ({ 
   getCartItems: (id) => dispatch(fetchCartItemsOfUser(id)),
   getProducts: () => dispatch(fetchProductsFromDB()),
   getProductsInCart: () => dispatch(fetchProductsInCart())
 })
 
+// exporting App
 export default connect(mapStateToProp,mapDispatchToProps)(App);

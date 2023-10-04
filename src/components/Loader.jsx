@@ -1,3 +1,4 @@
+// importing MUI Component
 import CircularProgress from '@mui/material/CircularProgress';
 
 const Loader = () => {
@@ -7,4 +8,6 @@ const Loader = () => {
         </div>
       );
 }
+
+// exporting Loader
 export default Loader;

@@ -1,3 +1,9 @@
+// importing methoos
+import { useState } from 'react';
+import { Link } from "react-router-dom";
+import { connect } from 'react-redux';
+
+// importing MUI component
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -6,41 +12,45 @@ import Typography from '@mui/material/Typography';
 import Badge from '@mui/material/Badge';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
-import { Link } from "react-router-dom";
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import MoreIcon from '@mui/icons-material/MoreVert';
-import { useState } from 'react';
-import { connect } from 'react-redux';
 
 const Navbar = (props) => {
 
+  // destructuring component
   const { userID, cartSize } = props;
+
+  // state variable
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
-
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
+  // function to open Menu
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
+  // function to open Menu
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
   };
 
+  // function to close Menu
   const handleMenuClose = () => {
     setAnchorEl(null);
     handleMobileMenuClose();
   };
 
+  // function to open Mobile Menu
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
   const menuId = 'primary-search-account-menu';
+  // Menu
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
@@ -57,6 +67,7 @@ const Navbar = (props) => {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
+      {/* cart button */}
       <MenuItem onClick={handleMenuClose}>
         <Link
           to={`/user/cart`}
@@ -69,6 +80,7 @@ const Navbar = (props) => {
         </Link>
       </MenuItem>
 
+      {/* add product */}
       <MenuItem>
         <Link
           to={`/add`}
@@ -85,6 +97,7 @@ const Navbar = (props) => {
   );
 
   const mobileMenuId = 'primary-search-account-menu-mobile';
+  // mobile menu
   const renderMobileMenu = (
     <Menu
       anchorEl={mobileMoreAnchorEl}
@@ -101,7 +114,7 @@ const Navbar = (props) => {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-
+      {/* cart button */}
       <Link
         to={'/user/cart'}
         style={{
@@ -119,6 +132,7 @@ const Navbar = (props) => {
         </MenuItem>
       </Link>
 
+      {/* Add Product button */}
       <Link
         to={`/add`}
         style={{
@@ -139,41 +153,56 @@ const Navbar = (props) => {
 
     return (
       <>   
-        <Box sx={{ flexGrow: 1 }} aria-label='Nav Container'>     
-          <AppBar position="static" aria-label='Nav'>
+        {/* container */}
+        <Box sx={{ flexGrow: 1 }} >
+          {/* nav bar start */}
+          <AppBar position="static">
             <Toolbar >             
+            {/* WebSite title */}
               <Link
                 style={{
                   textDecoration: "none",
                   color: "inherit"}}
                 to={"/"}
               >
-              <Typography                            
+                {/* Website title text */}    
+                <Typography                            
                   variant='h6'
                   noWrap
                   component='div'
                   sx={{display: {xs:'none', sm:"block"},mr:2}}             
                 >
-                    E-commerce                        
+                  E-commerce                        
+                
+              
                 </Typography>
+
               </Link>
 
+              {/* create space */}
               <Box sx={{ flexGrow: 1 }} />
-
-              <Box sx={{display:{xs:"none",md:"flex"}}}>
-                            
-                  <Link
-                    to={`/user/cart`}
-                    style={{
-                      textDecoration: "none",
-                      color: "inherit"
-                    }}
+              
+              {/* on large screen right side nave start*/}
+              <Box
+                sx={{
+                  display: {
+                    xs: "none",
+                    md: "flex"
+                  }
+                }}
+              >
+                {/* Cart Button */}     
+                <Link        
+                  to={`/user/cart`}         
+                  style={{             
+                    textDecoration: "none",             
+                    color: "inherit"   
+                  }}               
+                >
+                  <IconButton                                
+                    color="inherit"                            
+                    sx={{ mr: 3 }}     
                   >
-                      <IconButton                      
-                        aria-label="show X items in cart"                        
-                        color="inherit"                           
-                        sx={{ mr: 3 }}     
-                      >
                     <Badge badgeContent={cartSize} color="secondary">                 
                       <ShoppingCartIcon fontSize='large' />             
                     </Badge>
@@ -189,9 +218,9 @@ const Navbar = (props) => {
                   </IconButton> 
                 </Link>
 
+                {/* show user name */}
                 <IconButton
-                  edge="end"
-                  aria-label="account of current user"              
+                  edge="end"            
                   aria-controls={menuId}
                   aria-haspopup="true"
                   onClick={handleProfileMenuOpen}
@@ -210,12 +239,20 @@ const Navbar = (props) => {
                     User {userID}
                   </Typography>
                 </IconButton>
-              </Box>
 
-              <Box sx={{ display: { xs: 'flex', md: 'none' } }}>  
+              </Box>
+              {/* on large screen right side nave end*/}
+              {/* on smaller screen right side nav start*/}
+              <Box
+                sx={{
+                  display: {
+                    xs: 'flex',
+                    md: 'none'
+                  }
+                }}
+              >  
                 <IconButton
                   size="large"
-                  aria-label="show more"
                   aria-controls={mobileMenuId}
                   aria-haspopup="true"
                   onClick={handleMobileMenuOpen}
@@ -224,9 +261,13 @@ const Navbar = (props) => {
                   <MoreIcon />    
                 </IconButton>
               </Box>
+              {/* on smaller screen right side nav end*/}
+
             </Toolbar>   
           </AppBar>
+          {/* nav bar end */}
               
+          {/* render menus */}
           {renderMenu}
           {renderMobileMenu}      
         </Box>
@@ -234,6 +275,7 @@ const Navbar = (props) => {
     )
 }
 
+// sending props to navbar
 const mapStateToProp = (state,ownProp) => {
   const { userID } = ownProp;
   const cartSize = state.cart.products !== undefined && Object.keys(state.cart.products).length;
@@ -243,5 +285,5 @@ const mapStateToProp = (state,ownProp) => {
   }
 }
 
-
+// exporting Navbar component
 export default connect(mapStateToProp)(Navbar);
