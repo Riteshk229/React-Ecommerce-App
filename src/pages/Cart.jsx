@@ -6,7 +6,9 @@ import {
   CardMedia,
   Grid,
   Typography,
-  IconButton
+  IconButton,
+  Box,
+  Button
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -20,21 +22,55 @@ import {
   increaseQuantity
 
 } from '../features';
+import { getProduct } from '../assets/JS';
+import { Link } from 'react-router-dom';
 
 const Cart = (props) => {
   const dispatch = useDispatch();
-  const {getProducts,products,cartItems} = props;
+  const {products,cartItems} = props;
   const isLoading = useSelector(state => state.cart.loading);
 
   useEffect(() => {
-    getProducts();
-  }, [cartItems]);
+    getProduct();
+   }, [cartItems]);
   
   if (isLoading) {
     <Loader/>
   }
   return (
     <>
+      {!products.length &&
+        <>
+        <Box
+          sx={{
+            width: '100vw',
+            height: '90vh',
+            display: 'flex',
+            justifyContent: 'space-around',
+            alignItems: 'center'
+            
+          }}
+        >
+          <Typography variant='h3' sx={{position:'relative'}}>
+            Cart is Empty. Checkout our Home page to Add items to cart.
+            <Link to={'/'}>
+              <Button variant='contained' sx={{
+                display: 'block',
+                position: 'absolute',
+                left: "40%",
+                fontSize: 40,
+                mt:10
+              }}
+              >
+                Home Page
+              </Button>
+            </Link>
+          </Typography>
+        </Box>
+        </>
+      }
+
+      {products.length > 0 &&
         <Grid container spacing={2}
           sx={{
             mt: 5,
@@ -105,7 +141,7 @@ const Cart = (props) => {
                   >
 
                     <IconButton
-                      onClick={()=> { dispatch(increaseQuantity(item.product.id)) }}
+                      onClick={() => { dispatch(increaseQuantity(item.product.id)) }}
                     >
                       <AddCircleOutlineIcon />
                     </IconButton>
@@ -128,7 +164,7 @@ const Cart = (props) => {
                 
                     
                 <IconButton
-                  onClick={()=>dispatch(deleteItemInCart(index))}
+                  onClick={() => dispatch(deleteItemInCart(index))}
                   sx={{
                     position: "absolute",
                     right: 0,
@@ -146,21 +182,21 @@ const Cart = (props) => {
             ))}
           </Grid>
 
-        <Grid item
-          sx={{
-            width: "20%",
-            textAlign: "center",
-          }}>
-          <Typography  variant='h6' mt={5}  >
+          <Grid item
+            sx={{
+              width: "20%",
+              textAlign: "center",
+            }}>
+            <Typography variant='h6' mt={5}  >
               SubTotal ({products.length} item) :
-          </Typography>
+            </Typography>
           
-          <Typography variant='h4' m={3} sx={{
-            display: 'flex',
-            justifyContent: 'center',
+            <Typography variant='h4' m={3} sx={{
+              display: 'flex',
+              justifyContent: 'center',
            
-          }}>
-             <Typography  variant="" mr={3}> Rs </Typography>{
+            }}>
+              <Typography variant="" mr={3}> Rs </Typography>{
                 Intl
                   .NumberFormat("en-US", { maximumFractionDigits: 2 })
                   .format(
@@ -170,6 +206,7 @@ const Cart = (props) => {
             </Typography>
           </Grid>
         </Grid>
+      }
     </>
   )
 }

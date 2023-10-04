@@ -56,13 +56,16 @@ export const fetchProductsInCart = createAsyncThunk(
 
 export const addItemIncart = createAsyncThunk(
     'carts/addItemIncart',
-    async (userData, {getState}) => {
+    async (productID, {getState,dispatch}) => {
         try {
             const products = getState().products.list;
-            const product = products.filter((product) => product.id === inCart.productId);
+            const product = products.filter((product) => product.id === productID);
+            // if (getState().cart.products.includes(product[0])) {
+            //     dispatch()
+            // }
             return {
-                product: product,
-                quantity: inCart.quantity
+                product: product[0],
+                quantity: 1
             }
         } catch (error) {
             throw  rejectWithValue(error.message)
@@ -148,7 +151,18 @@ export const cartSlice = createSlice({
             }
             state.loading = false;
             console.log(current(state));
-            state.products = [...state.products,action.payload];
+            if (state.products.includes(action.payload)) {
+                state.products = state.products.map((product) => {
+                    console.log(product);
+                    if (action.payload === product.product.id) {
+                        product.quantity += 1;
+                    }
+                return product;
+            
+                })
+            } else {
+                state.products.push(action.payload);
+            }
             console.log(current(state));
         })
         builder.addCase(addItemIncart.pending, (state) => {

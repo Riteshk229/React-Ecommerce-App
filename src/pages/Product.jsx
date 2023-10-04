@@ -71,10 +71,7 @@ const Product = () => {
     }, [editModeActive,dispatch]);
 
     const handleAddToCart = (productID) => {
-        dispatch(addItemIncart({
-            productId: productID,
-            quantity: 1
-        }))
+        dispatch(addItemIncart(productID))
     }
 
     const handleImageChange = (e) => {
