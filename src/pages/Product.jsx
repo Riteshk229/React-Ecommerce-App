@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { getProduct } from "../assets/JS";
+import {  useNavigate, useParams } from "react-router-dom";
 import Box from '@mui/material/Box';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
@@ -21,9 +20,13 @@ import { styled } from '@mui/material/styles';
 
 import { Loader } from "../components";
 import { useDispatch, useSelector} from "react-redux";
-import {  fetchProductFromDB,editProductOnDB } from "../features/productSlice";
+import {
+    fetchProductFromDB,
+    editProductOnDB,
+    fetchProductsFromDB,
+    addItemIncart,
+} from "../features";
 import { toast } from "react-toastify";
-import { fetchProductsFromDB } from "../features/productsSlice";
 
 
 const VisuallyHiddenInput = styled('input')({
@@ -39,28 +42,40 @@ const VisuallyHiddenInput = styled('input')({
   });
   
 const Product = () => {
-    const  productID  = parseInt(useParams().productID);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const  productID  = parseInt(useParams().productID);
     const isLoading = useSelector(state => state.product.loading);
     const product = useSelector(state => state.product.product);
+    const err = useSelector(state => state.product.error);
     const [editModeActive, setEditModeActive] = useState(false);
     const [title, setTitle] = useState(product.title);
     const [image, setImage] = useState(product.image);
     const [rating, setRating] = useState(product.rating | 0);
     const [price, setPrice] = useState(product.price | 0);
     const [description, setDescription] = useState(product.description);
-    
-    useEffect(() => { 
+     
+    useEffect(() => {
+          
         dispatch(fetchProductFromDB(productID));
-        setTitle(product.title);
+        if (err.status) {
+            toast.error(`${err.message}`)
+            navigate('/');
+        }
+        setTitle(product.title);    
         setImage(product.image);
-        setPrice(product.price);
-        setRating(product.rating);
+        setPrice(product.price); 
+        setRating(product.rating);    
         setDescription(product.description);
-
+          
     }, [editModeActive,dispatch]);
 
-
+    const handleAddToCart = (productID) => {
+        dispatch(addItemIncart({
+            productId: productID,
+            quantity: 1
+        }))
+    }
 
     const handleImageChange = (e) => {
         console.log(e.target.files);
@@ -87,6 +102,7 @@ const Product = () => {
               }
         )
         dispatch(fetchProductsFromDB());
+  
         setEditModeActive(false);
     }
 
@@ -230,7 +246,10 @@ const Product = () => {
                                     color="text.tertiary"
                                     fontWeight={600}
                                 >
-                                     Rs {Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format(product.price * 30)}
+                                    Rs {Intl
+                                        .NumberFormat("en-US", { maximumFractionDigits: 2 })                                        
+                                        .format(product.price * 30
+                                    )}   
                                 </Typography>
                 
                                         
@@ -270,7 +289,8 @@ const Product = () => {
                                             color: "goldenrod",                                        
                                             border: "2px solid orange",                                        
                                         }}                                    
-                                        startIcon={<AddCircleOutlineOutlinedIcon />}                                                                         
+                                        startIcon={<AddCircleOutlineOutlinedIcon />}
+                                        onClick={()=>{handleAddToCart(product.id)}}
                                     >
                                         Add To Cart..
                                     </Button>                    

@@ -10,7 +10,6 @@ export async function getProducts() {
             }
         })
         .catch((err) => {
-            console.log(`Error in fetching Products from Data Base ..!!`, err.toJSON);
             return {
                 error: err.message,
                 success: false
@@ -27,7 +26,6 @@ export async function getProduct(productID) {
         }
     })
     .catch((err) => {
-        console.log(`Error in fetching Product from Data Base ..!!`, err.toJSON);
         return {
             error: err.message,
             success: false
@@ -44,7 +42,6 @@ export async function editProduct(editedProduct,productID) {
            }
         })
         .catch((err) => {
-            console.log(`Error in fetching Product from Data Base ..!!`, err.toJSON);
             return {
                 error: err.message,
                 success: false
@@ -68,7 +65,6 @@ export async function addNewProduct(newProduct) {
             }
         })
         .catch((err) => {
-            console.log(`Error in adding Product to the Database ..!!`, err.toJSON);
             return {
                 error: err.message,
                 success: false
@@ -84,7 +80,6 @@ export async function delProduct(productId) {
             }
         })
         .catch((err) => {
-            console.log(`Error in deleting Product..!! `, err.toJSON);
             return {
                 error: err.message,
                 success : false
@@ -95,17 +90,20 @@ export async function delProduct(productId) {
 export async function getCartItems(userId) {
     return await axios.get(`${API_ROOT}/cart/?userId=${userId}`)
         .then(response => {
-            console.log("carttttttt",response);
             return {
                 data: response.data,
                 success : true
             }
         })
         .catch((err) => {
-            console.log(`Error in fetching cart items for the user ..!!`, err.toJSON);
             return {
                 error: err.message,
                 success : false
             }
         });
+}
+
+export const generateRandomUserId = () => {
+    const userID = Math.floor(Math.random() * 7);
+    return userID !== 0 ? userID : 1;
 }

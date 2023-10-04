@@ -1,10 +1,8 @@
-import { styled, alpha } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import InputBase from '@mui/material/InputBase';
 import Badge from '@mui/material/Badge';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
@@ -14,11 +12,11 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 
-const Navbar = () => {
-  const state = useSelector(state => state.products.list)
-    
+const Navbar = (props) => {
+
+  const { userID, cartSize } = props;
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
 
@@ -61,16 +59,15 @@ const Navbar = () => {
     >
       <MenuItem onClick={handleMenuClose}>
         <Link
-          to={`/user/${8}`}
+          to={`/user/cart`}
           style={{
             textDecoration: "none",
             color: "inherit"
           }}
         >
-          Profile
+          My Cart
         </Link>
       </MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
 
       <MenuItem>
         <Link
@@ -114,27 +111,11 @@ const Navbar = () => {
       >
         <MenuItem>
           <IconButton size="large" aria-label="show x new items in cart" color="inherit">
-            <Badge badgeContent={4} color="secondary">    
+            <Badge badgeContent={cartSize} color="secondary">    
               <ShoppingCartIcon />
             </Badge>
           </IconButton>       
-          <p>Cart Items</p>
-        </MenuItem>
-      </Link>
-
-      <Link
-        to={`/user/${8}`}
-        style={{
-          textDecoration: "none",
-          color: "inherit"
-        }}
-      >
-          
-        <MenuItem>   
-          <IconButton size="large" aria-label="account of current user" color="inherit">   
-            <AccountCircle />
-          </IconButton>
-          <p>Account</p>
+          <p>My Cart</p>
         </MenuItem>
       </Link>
 
@@ -181,32 +162,32 @@ const Navbar = () => {
 
               <Box sx={{display:{xs:"none",md:"flex"}}}>
                             
-                <IconButton                      
-                  aria-label="show X items in cart"                        
-                  color="inherit"                           
-                  sx={{ mr: 3 }}     
-                >
                   <Link
-                    to={'/user/cart'}
+                    to={`/user/cart`}
                     style={{
                       textDecoration: "none",
                       color: "inherit"
                     }}
                   >
-                    <Badge badgeContent={4} color="secondary">                 
+                      <IconButton                      
+                        aria-label="show X items in cart"                        
+                        color="inherit"                           
+                        sx={{ mr: 3 }}     
+                      >
+                    <Badge badgeContent={cartSize} color="secondary">                 
                       <ShoppingCartIcon fontSize='large' />             
                     </Badge>
-                  </Link>
-                                
-                  <Typography
-                        variant='6'
-                        noWrap
-                        component='span'
-                        sx={{ml: 2 }}
-                    >
-                          Cart
-                  </Typography>    
-                </IconButton>
+                              
+                    <Typography
+                      variant='6'
+                      noWrap
+                      component='span'
+                      sx={{ml: 2 }}
+                    > 
+                      Cart
+                    </Typography>
+                  </IconButton> 
+                </Link>
 
                 <IconButton
                   edge="end"
@@ -224,7 +205,7 @@ const Navbar = () => {
                     variant='6'
                     noWrap
                     component='span'
-                    sx={{ ml: 2 }}
+                    sx={{ ml: 2 , textTransform : "capitalize"}}
                   >           
                     User
                   </Typography>
@@ -253,4 +234,14 @@ const Navbar = () => {
     )
 }
 
-export default Navbar;
+const mapStateToProp = (state,ownProp) => {
+  const { userID } = ownProp;
+  const cartSize = state.cart.cartItems.products !== undefined && Object.keys(state.cart.cartItems.products).length;
+  return {
+    userID,
+    cartSize 
+  }
+}
+
+
+export default connect(mapStateToProp)(Navbar);

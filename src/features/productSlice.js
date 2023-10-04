@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice , current} from "@reduxjs/toolkit";
 import { editProduct, getProduct } from "../assets/JS";
 
+
 const initialState = {    
     product: [],
     loading: false,
@@ -33,11 +34,12 @@ export const editProductOnDB = createAsyncThunk(
         try {
             const response = await editProduct(editedProduct,productID);
             if (response.success) {
-                dispatch.edit(response.data);
+                dispatch(edit(response.data));
             } else {
                 return rejectWithValue(response.error)
             }  
         } catch (error) {
+            console.log("err",error);
             throw  rejectWithValue(error.message)
         }
     }  
@@ -68,7 +70,7 @@ export const productSlice = createSlice({
             state.loading = false;
             state.error = {
                 status: true,
-                message : action.error
+                message : action.payload
             }
         })
         builder.addCase(editProductOnDB.pending, (state) => {

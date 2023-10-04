@@ -1,11 +1,13 @@
-import Home from "./home"
 import NotFound from "./404"
-import Profile from "./Profile"
-import UserProfile from "./UserProfile"
+import AddProduct from "./AddProduct"
+import Home from "./home"
+import Product from "./Product"
+import Cart from "./Cart"
 
 export {
     Home,
     NotFound,
-    Profile,
-    UserProfile
+    AddProduct,
+    Product,
+    Cart
 }

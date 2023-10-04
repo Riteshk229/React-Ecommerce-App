@@ -1,37 +1,69 @@
-import { useState } from 'react'
+import { useEffect } from 'react'
+import { connect} from 'react-redux'
 import { Route,Routes} from 'react-router-dom'
 
-import '../assets/styles/App.css'
-import Navbar from './Navbar'
-import { Home,NotFound, Profile, UserProfile } from '../pages'
-import Product from '../pages/Product'
-import Add_Product from '../pages/Add_Product'
-import { useDispatch } from 'react-redux'
-import { useEffect } from 'react'
-import { fetchProductsFromDB } from '../features/productsSlice'
-import Cart from '../pages/Cart'
+import { Navbar } from './index'
+import {
+  Home,
+  NotFound,
+  AddProduct,
+  Cart,
+  Product
+} from '../pages'
 
-function App() {
-  const dispatch = useDispatch();
+import {
+  fetchCartItemsOfUser,
+  fetchProductsFromDB,
+  fetchProductsInCart,
+} from '../features'
+
+import '../assets/styles/App.css'
+
+
+
+function App(props) {
+  console.log("app", props);
+  const { userID,
+    getCartItems,
+    getProducts,
+    dispatch,
+    getProductsInCart
+  } = props;
+  console.log("app", userID);
 
   useEffect(() => {    
-      dispatch(fetchProductsFromDB());
+    getProducts();
+    getCartItems(userID);
+    getProductsInCart();
   }, [dispatch]);
 
   return (
     <>
-      <Navbar />
+      <Navbar 
+        userID={userID}
+      />
       <Routes>
         <Route path='' element={<Home />} />
-        <Route path='/userId/:userId' element={<Profile />} />
-        <Route path='/product/:productID' element={<Product />}/>
-        <Route path='/user/:id' element={<UserProfile />}/>
-        <Route path='/add' element={<Add_Product />} />
-        <Route path='/user/:userId/cart' element={<Cart/>} />
+        <Route path='/products/:productID' element={<Product />}/>
+        <Route path='/add' element={<AddProduct />} />
+        <Route path='/user/cart' element={<Cart userID={userID}  />} />
         <Route path='*' element={<NotFound />} />
       </Routes>
     </>
   )
 }
 
-export default App
+const mapStateToProp = (state,ownProp) => {
+  const { userID } = ownProp;
+  return {
+    userID,
+  }
+}
+
+const mapDispatchToProps = (dispatch) => ({ 
+  getCartItems: (id) => dispatch(fetchCartItemsOfUser(id)),
+  getProducts: () => dispatch(fetchProductsFromDB()),
+  getProductsInCart: () => dispatch(fetchProductsInCart())
+})
+
+export default connect(mapStateToProp,mapDispatchToProps)(App);

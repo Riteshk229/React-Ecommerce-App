@@ -10,15 +10,13 @@ import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
 import Typography from '@mui/material/Typography';
 import { Link } from "react-router-dom";
 import { useDispatch,useSelector } from 'react-redux';
-import { deleteProductInDB } from '../features/productsSlice';
 import { toast } from "react-toastify";
+import { deleteProductInDB } from '../features';
 
 const Products = () => {
   const defaultImg = 'https://png.pngtree.com/template/20220419/ourmid/pngtree-photo-coming-soon-abstract-admin-banner-image_1262901.jpg';
   const dispatch = useDispatch()
   const products= useSelector(state => state.products.list);
-
-  console.log("state state", products);
 
   const handleDeleteClick = (id) => {
     toast.promise(
@@ -40,7 +38,7 @@ const Products = () => {
         >
           {products.map((product, index) => {   
             return (
-                    
+
               <Grid
                 item
                 zeroMinWidth
@@ -48,7 +46,6 @@ const Products = () => {
                 key={index}  
               >
 
-              
                 <Box sx={{
                   position: "relative",
                   width: 350,
@@ -57,7 +54,7 @@ const Products = () => {
                   border : "1px solid black"
                 }}
                 >
-                  
+
                   <CardMedia
                     component="img"
                     sx={{
@@ -69,55 +66,64 @@ const Products = () => {
                     alt="product.jpg"
                   />
                       
-          <IconButton
-            onClick={()=>handleDeleteClick(product.id)}
-            size="large"
-              sx={{
-                position: "absolute",
-                right: 2,
-                top: 2,
-                color : "red"
-              }}
-            >
-              <DeleteOutlineRoundedIcon  fontSize="large"  />
-            </IconButton>
-            <Link
-                            style={{
-                                textDecoration: "none",
-                                color: "inherit"
-                            }}
-                            to={`/product/${product.id}`}
-                        >
-        <CardContent sx={{ flex: '1 0 auto', textAlign:"left"}}>
-          <Typography component="div" variant="h5" noWrap>
-            {product.title}
-            </Typography>
-          <Typography component="span" variant='h6' >
-              <Rating
-                precision={0.1}
-                value={product.rating}
-                sx={{
-                  ml: 1,
-                  verticalAlign: "sub",
-                  color: "yellowgreen",
-                }}
-                emptyIcon={
-                  <StarOutlineIcon sx={{color : "black"}}/>
-                }
-                readOnly
-              />
-            </Typography>
-          <Typography variant="h4" color="text.secondary" fontWeight={500} >
-            Rs {Intl.NumberFormat("en-US", {maximumFractionDigits : 2}).format(product.price*30)}
-            </Typography>
+          
+                  <IconButton
+                    onClick={() => handleDeleteClick(product.id)}
+                    size="large"
+                    sx={{
+                      position: "absolute",
+                      right: 2,
+                      top: 2,
+                      color : "red"
+                    }}
+                  >
+                    <DeleteOutlineRoundedIcon fontSize="large" />
+                  </IconButton>
+            
+                  <Link
+                    style={{
+                      textDecoration: "none",      
+                      color: "inherit"    
+                    }}    
+                    to={`/products/${product.id}`}
+                  >
+                    
+        
+                    <CardContent sx={{ flex: '1 0 auto', textAlign: "left" }}>
 
+                      <Typography component="div" variant="h5" noWrap>
+                        {product.title}
+                      </Typography>
+          
+                      <Typography component="span" variant='h6' >
+                        <Rating
+                          precision={0.1}
+                          value={product.rating}
+                          sx={{
+                            ml: 1,
+                            verticalAlign: "sub",
+                            color: "yellowgreen",
+                          }}
+                
+                          emptyIcon={
+                            <StarOutlineIcon sx={{ color: "black" }} />
+                          }
+                          readOnly
+                        />
+                      </Typography>
+          
+                      <Typography variant="h4" color="text.secondary" fontWeight={500} >
+                        Rs {
+                          Intl.NumberFormat("en-US", { maximumFractionDigits: 2 })
+                            .format(product.price * 30)
+                        }
+                      </Typography>
 
-            </CardContent>
-            </Link>
+                    </CardContent>
+                  </Link>
                 </Box>             
-                    </Grid>
-                )
-            })} 
+              </Grid>
+          )})} 
         </Grid>
 
       </>

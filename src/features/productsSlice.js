@@ -51,7 +51,7 @@ export const deleteProductInDB = createAsyncThunk(
     async (productID, { dispatch, rejectWithValue }) => {
         try {
             if (productID <= 20) {
-                dispatch(deleteProduct);
+                dispatch(deleteProduct(productID));
             }
             else {
                 const response = await delProduct(productID);

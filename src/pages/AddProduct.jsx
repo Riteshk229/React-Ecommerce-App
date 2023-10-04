@@ -1,4 +1,4 @@
-import { useState ,useEffect} from "react"
+import { useState } from "react"
 import {
   FormControl,
   Box,
@@ -10,10 +10,10 @@ import {
 import { styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { useDispatch } from "react-redux";
-
-import { useNavigate } from "react-router-dom";
-import { addProductToDB } from "../features/productsSlice";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+
+import { addProductToDB } from "../features";
 
 export default function Add_Product() {
   const dispatch = useDispatch();

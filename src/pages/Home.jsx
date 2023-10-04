@@ -7,17 +7,18 @@ import { IconButton, MenuItem, OutlinedInput } from "@mui/material";
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import {toast} from "react-toastify"
 
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch, connect } from "react-redux";
 import {
     resetState,
     sortByPrice,
-} from "../features/productsSlice";
-import { Scale } from "@mui/icons-material";
+    fetchProductsFromDB
+} from "../features";
 
-const Home = () => {
-    const dispatch = useDispatch();
+
+const Home = ({sortBy,reset}) => {
+    
     const [optionValue, setOptionValue] = useState([]);
-    const [xVisible, setXVisible] = useState("false");
+    const [xVisible, setXVisible] = useState(false);
     const isLoading = useSelector(state => state.products.loading);
 
     const Options = [
@@ -33,7 +34,7 @@ const Home = () => {
         console.log(value);
         setOptionValue(value);
         if (value === 'asc' || value === "desc") {
-            dispatch(sortByPrice(value));
+            sortBy(value);
             if (value == 'asc') {
                 toast.success(`Sorted by Price : Low to High.`);
             } else {
@@ -42,7 +43,7 @@ const Home = () => {
             setXVisible(true);
         }
         else {
-            dispatch(resetState());
+            reset()
             toast.success(`Order Back to default..!!`);
             setOptionValue("");
             setXVisible(false)
@@ -64,7 +65,9 @@ const Home = () => {
                 }}>
                     <InputLabel>Sort By</InputLabel>
                     <IconButton
+                        
                         sx={{
+                            display: `${xVisible ? "block" : "none"}`,
                             position: "absolute",
                             right: 2,
                             top: "-40px",
@@ -84,7 +87,7 @@ const Home = () => {
                         }}
                         size="small"
                     >
-                        <CloseOutlinedIcon  sx={{visibility: `${xVisible ? "visible" : "hidden"}`}}/>
+                        <CloseOutlinedIcon />
                     </IconButton>
                     <Select
                         value={optionValue}
@@ -108,4 +111,12 @@ const Home = () => {
     )
 }
 
-export default Home;
+
+const mapDispatchToProp = (dispatch) => {
+    return {
+        sortBy: (order) => dispatch(sortByPrice(order)),
+        reset: () => dispatch(resetState())
+    }
+}
+
+export default connect(null,mapDispatchToProp)(Home);
