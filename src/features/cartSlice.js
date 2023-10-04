@@ -82,7 +82,6 @@ export const cartSlice = createSlice({
             })
         },
         decreaseQuantity: (state, action) => {
-
             state.products = state.products.map((product) => {
                 if (action.payload === product.product.id && product.quantity > 0) {
                     product.quantity -= 1;
@@ -91,7 +90,9 @@ export const cartSlice = createSlice({
             })
             
             state.products = state.products.filter((product) => {
-                return product.product.id !== action.payload
+                if (product.quantity > 0) {
+                    return product.product.id === action.payload
+                }
             })
         },
         deleteItemInCart: (state, action) => {
