@@ -13,13 +13,18 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 
 import { Loader } from '../components';
-import { deccreaseQuantity, fetchCartItemsOfUser, fetchProductsInCart, increaseQuantity } from '../features';
+import {
+  decreaseQuantity,
+  deleteItemInCart,
+  fetchProductsInCart,
+  increaseQuantity
+
+} from '../features';
 
 const Cart = (props) => {
   const dispatch = useDispatch();
   const {getProducts,products,cartItems} = props;
   const isLoading = useSelector(state => state.cart.loading);
-  const [quantity,setQuantity] = useState()
 
   useEffect(() => {
     getProducts();
@@ -41,7 +46,6 @@ const Cart = (props) => {
           <Grid item sx={{
             width: "80%",
           }}>
-            {console.log("loop cart",products)}
             {products.map((item, index) => (
               <Card
                 key={index}
@@ -53,7 +57,6 @@ const Cart = (props) => {
                   display: "flex",
                   justifyContent: "space-around",
                 }}>
-                {console.log("loop cart",item)}
                 <CardMedia
                   component="img"
                   sx={{
@@ -102,17 +105,19 @@ const Cart = (props) => {
                   >
 
                     <IconButton
-                      onClick={()=> { dispatch(increaseQuantity(index)) }}
+                      onClick={()=> { dispatch(increaseQuantity(item.product.id)) }}
                     >
                       <AddCircleOutlineIcon />
                     </IconButton>
-                      
+                  
+
                     <Typography variant='h5' mt={0.5} noWrap>
                       {item.quantity}
                     </Typography>
 
+
                     <IconButton
-                      onClick={() => { dispatch(deccreaseQuantity(index)) }}
+                      onClick={() => { dispatch(decreaseQuantity(item.product.id)) }}
                     >
                       <RemoveCircleOutlineIcon />
                     </IconButton>
@@ -122,31 +127,40 @@ const Cart = (props) => {
                 </CardContent>
                 
                     
-                <IconButton sx={{
-                  position: "absolute",
-                  right: 0,
-                  top: 0,
-                  color: 'blue',
-                  '&:hover': {
-                    color: 'red'
-                  }
-                }}>
+                <IconButton
+                  onClick={()=>dispatch(deleteItemInCart(index))}
+                  sx={{
+                    position: "absolute",
+                    right: 0,
+                    top: 0,
+                    color: 'blue',
+                    '&:hover': {
+                      color: 'red'
+                    }
+                  }}
+                >
                   <DeleteIcon fontSize='large' />
                 </IconButton>
 
               </Card>
-            
             ))}
           </Grid>
 
-          <Grid item sx={{
-            width: "20%"
+        <Grid item
+          sx={{
+            width: "20%",
+            textAlign: "center",
           }}>
-            <Typography>
-              SubTotal ({products.length} item):
-            </Typography>
-            <Typography>
-              Rs {
+          <Typography  variant='h6' mt={5}  >
+              SubTotal ({products.length} item) :
+          </Typography>
+          
+          <Typography variant='h4' m={3} sx={{
+            display: 'flex',
+            justifyContent: 'center',
+           
+          }}>
+             <Typography  variant="" mr={3}> Rs </Typography>{
                 Intl
                   .NumberFormat("en-US", { maximumFractionDigits: 2 })
                   .format(

@@ -1,6 +1,10 @@
 import axios from "axios";
 const API_ROOT = "https://fakedata-ch1p.onrender.com"
 
+export const generateRandomUserId = () => {
+    const userID = Math.floor(Math.random() * 7);
+    return userID !== 0 ? userID : 1;
+}
 export async function getProducts() {
     return await axios.get(`${API_ROOT}/products`)
         .then(response => {
@@ -101,9 +105,4 @@ export async function getCartItems(userId) {
                 success : false
             }
         });
-}
-
-export const generateRandomUserId = () => {
-    const userID = Math.floor(Math.random() * 7);
-    return userID !== 0 ? userID : 1;
 }

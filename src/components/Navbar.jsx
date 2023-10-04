@@ -207,7 +207,7 @@ const Navbar = (props) => {
                     component='span'
                     sx={{ ml: 2 , textTransform : "capitalize"}}
                   >           
-                    User
+                    User {userID}
                   </Typography>
                 </IconButton>
               </Box>
@@ -236,7 +236,7 @@ const Navbar = (props) => {
 
 const mapStateToProp = (state,ownProp) => {
   const { userID } = ownProp;
-  const cartSize = state.cart.cartItems.products !== undefined && Object.keys(state.cart.cartItems.products).length;
+  const cartSize = state.cart.products !== undefined && Object.keys(state.cart.products).length;
   return {
     userID,
     cartSize 
