@@ -59,7 +59,7 @@ const Product = () => {
     const navigate = useNavigate();
 
     // state variables
-    const addingErr = useSelector(state => state.cart.error.status);
+    const [added, setAdded] = useState(false);
     const  productID  = parseInt(useParams().productID);
     const isLoading = useSelector(state => state.product.loading);
     const product = useSelector(state => state.product.product);
@@ -90,11 +90,18 @@ const Product = () => {
 
     // function to handle add to cart action
     const handleAddToCart = (productID) => {
+        if (added) {
+            toast.info("Product in cart please check");
+            return;
+        }
+        
         // notification
         dispatch(addItemIncart(productID))
 
         // notification
         toast.success("Product added to Cart..!!");
+
+        setAdded(true);
     }
 
     // function to handle image uplaod
@@ -397,7 +404,7 @@ const Product = () => {
                                             border: "2px solid orange",                                        
                                         }}                                    
                                         startIcon={<AddCircleOutlineOutlinedIcon />}
-                                        onClick={()=>{handleAddToCart(product.id)}}
+                                        onClick={() => { handleAddToCart(product.id) }}
                                     >
                                         Add To Cart..
                                     </Button>                    

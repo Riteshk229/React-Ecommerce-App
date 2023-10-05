@@ -1,7 +1,7 @@
 // importing redux methods
 import { createSlice, createAsyncThunk, current } from "@reduxjs/toolkit";
 // importing functions
-import { getCartItems } from "../assets/JS";
+import { getCartItems, getProduct } from "../assets/JS";
 
 
 // initial cart state
@@ -45,20 +45,34 @@ export const addItemIncart = createAsyncThunk(
     async (productID, {getState,rejectWithValue,fulfillWithValue}) => {
         try {
 
-            // get products
-            const products = getState().products.list;
-            // get current products
-            const product = products.filter((product) => product.id === productID);
-            // check if it exists in cart
-            const check = getState().cart.products.find(item => item.product.id === product[0].id);
-            
-            // if it doesn't exist create one
-            if (!check) {
-                return fulfillWithValue({
-                    product: product[0],
+            const response = await getProduct(productID);
+
+            if (response.success) {
+                return {      
+                    product: {
+                        id: getState().cart.products.length,
+                        price: response.data.price,
+                        title: response.data.title,
+                        image: response.data.image
+                    },
                     quantity: 1
-                })
+                }
+                
+            } else {
+                return rejectWithValue(response.error)
             }
+            
+            // // if it doesn't exist create one
+            // if (!check) {
+            //     return fulfillWithValue({
+            //         product: {
+            //             id: getState().cart.products.length + 1 | 1,
+            //             price: product.price,
+            //             title: product.title
+            //         },
+            //         quantity: 1
+            //     })
+            // }
 
         // on error 
         } catch (error) {
@@ -75,25 +89,21 @@ export const cartSlice = createSlice({
         increaseQuantity: (state, action) => {
 
             state.products = state.products.map((product) => {
-                if (action.payload === product.product.id) {
+                if (action.payload === product.product.id ) {
                     product.quantity += 1;
                 }
                 return product;
             })
         },
         decreaseQuantity: (state, action) => {
+            
             state.products = state.products.map((product) => {
-                if (action.payload === product.product.id && product.quantity > 0) {
+                if (action.payload === product.product.id && product.quantity >= 1) {
                     product.quantity -= 1;
                 }
                 return product;
             })
             
-            state.products = state.products.filter((product) => {
-                if (product.quantity > 0) {
-                    return product.product.id === action.payload
-                }
-            })
         },
         deleteItemInCart: (state, action) => {
             state.products = state.products.filter((product) => {
@@ -125,7 +135,18 @@ export const cartSlice = createSlice({
                 status: false,
                 message: ""
             }
-            state.products.push(action.payload);
+
+            if (action.payload.product) {
+                state.products.push(action.payload);
+            }
+            else {
+                state.products = state.products.map((product) => {
+                    if (action.payload === product.product.id) {
+                        product.quantity += 1;
+                    }
+                    return product;
+                })
+            }
 
         })
         builder.addCase(addItemIncart.pending, (state) => {

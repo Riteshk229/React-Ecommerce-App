@@ -8,7 +8,7 @@ When opening the web app and automatice userID (range 0 - 7) will be assigned, a
 
  **Product Container** will you the list of different product in card format consisting of image and **Product details**.You can **Delete** products from the product conatiner by clicking on the trashcan icon. **Product details** will show the name,price and rating of the product,on clicking it will take you the product page where you can get more information about the product and **Edit** the product by clicking the pencil button updating product information and submitting it by clicking on the **Save** button. If you like the product you can add the product to you cart.
 
- In **Cart** you can see the products you have selected on the left and **Sub Total** of all the products on right. you  can adjust the quantity of the product by clicking the **+/-** button and  if the product quantity reaches  **Zero** it  will be removed. You can also remove the product by clicking the **Delete** button onthe top-right corner.
+ In **Cart** you can see the products you have selected on the left and **Sub Total** of all the products on right. you  can adjust the quantity of the product by clicking the **+/-** button. You can also remove the product by clicking the **Delete** button onthe top-right corner.
 
 *  Styling is incoperated using **MUI**.
 *  **Redux** is used for state management.
