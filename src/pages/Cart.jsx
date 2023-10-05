@@ -50,8 +50,8 @@ const Cart = (props) => {
         
         <Box
           sx={{
-            width: '100vw',
-            height: '90vh',
+            width: '90vw',
+            height: '50vh',
             display: 'flex',
             justifyContent: 'space-around',
             alignItems: 'center',
@@ -61,7 +61,7 @@ const Cart = (props) => {
         >
           
           <Typography
-            variant='h3'
+            variant='h4'
             sx={{
               position: 'relative'
             }}>
@@ -79,7 +79,7 @@ const Cart = (props) => {
                   position: 'absolute',
                   left: "40%",
                   fontSize: 40,
-                  mt:10
+                  mt:2
                 }}
               >
                 Home Page
@@ -87,6 +87,7 @@ const Cart = (props) => {
             </Link>
           </Typography>
         </Box>
+
       }
 
       {/* if items in cart render this */}

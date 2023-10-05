@@ -292,6 +292,7 @@ const Product = () => {
                             display: "flex",
                             width: "100%",
                             mt: 2, mb: 1, p: 1,
+                            justifyContent : "center"
                             }}
                     >
                         {/* display image start */}

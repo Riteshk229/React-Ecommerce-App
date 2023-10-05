@@ -156,7 +156,9 @@ const Navbar = (props) => {
         {/* container */}
         <Box sx={{ flexGrow: 1 }} >
           {/* nav bar start */}
-          <AppBar position="static">
+          <AppBar
+            position="static"
+          >
             <Toolbar >             
             {/* WebSite title */}
               <Link
@@ -170,7 +172,12 @@ const Navbar = (props) => {
                   variant='h6'
                   noWrap
                   component='div'
-                  sx={{display: {xs:'none', sm:"block"},mr:2}}             
+                  sx={{
+                    display: {
+                      sm: "block"
+                    },
+                    mr: 2
+                  }}             
                 >
                   E-commerce                        
                 
@@ -187,7 +194,7 @@ const Navbar = (props) => {
                 sx={{
                   display: {
                     xs: "none",
-                    md: "flex"
+                    md: "flex",
                   }
                 }}
               >

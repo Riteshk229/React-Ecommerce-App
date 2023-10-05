@@ -44,7 +44,9 @@ const Products = () => {
         <Grid
           container
           direction="row"
-          spacing={1}                
+          spacing={1}
+          textAlign={"center"}
+          justifyContent={"center"}
         >
 
           {/* Looping the displaying products */}
@@ -61,7 +63,7 @@ const Products = () => {
 
                 <Box sx={{
                   position: "relative",
-                  width: 350,
+                  width: 300,
                   height : 350,
                   mt: 1, mb: 1, p:1,
                   border : "1px solid black"
