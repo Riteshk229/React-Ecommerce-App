@@ -1,4 +1,4 @@
-# E-commerce App React
+# E-commerce (React)
 
 This React Project is made using viteJS and it shows a basic E-commerce site where users can view the products available and add them to cart for further purchasing and sellers can post thier products  to be sold and change  the product details if neccessary. 
 
@@ -14,7 +14,7 @@ When opening the web app and automatice userID (range 0 - 7) will be assigned, a
 *  **Redux** is used for state management.
 *  **React-router-dom** is used tp manage routes.
 *  API calls are made using **Axios**.
-*  Data has been provided by **JSON server**.
+*  Data has been provided by **JSON server**[^1].
 
 ## Steps to Run this project
 
@@ -65,4 +65,6 @@ Ecommerce-App-React
 
 ## Hoisted
 
-Firebse [Ecommerce (React)](https://react-ecommerce-51d79.firebaseapp.com/)
+Firebse : [Ecommerce (React)](https://react-ecommerce-51d79.firebaseapp.com/)
+
+[^1]: https://fakedata-ch1p.onrender.com
