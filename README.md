@@ -1,6 +1,6 @@
 # E-commerce (React)
 
-This React Project is made using viteJS and it shows a basic E-commerce site where users can view the products available and add them to a cart for further purchasing and sellers can post their products to be sold and change the product details if necessary.
+This React Project was made using viteJS and it's an E-commerce website where users can view the products available and add them to a cart for further purchasing, sellers can post their products to be sold and change the product details if necessary.
 
 When opening the web app an automatic userID (range 0 - 7) will be assigned, and a loading screen will appear until all the products are fetched. **Home** screen consists of 2 parts **Navbar** and **Product container**.
 
