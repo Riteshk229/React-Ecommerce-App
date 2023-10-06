@@ -225,6 +225,30 @@ const Navbar = (props) => {
                   </IconButton> 
                 </Link>
 
+                {/* Add Product */}
+                <Link        
+                  to={`/Add`}         
+                  style={{             
+                    textDecoration: "none",             
+                    color: "inherit"   
+                  }}               
+                >
+                  <IconButton                                
+                    color="inherit"                            
+                    sx={{ mr: 3 }}     
+                  >
+                              
+                    <Typography
+                      variant='6'
+                      noWrap
+                      component='span'
+                      sx={{ml: 2 }}
+                    > 
+                      Add Product
+                    </Typography>
+                  </IconButton> 
+                </Link>
+
                 {/* show user name */}
                 <IconButton
                   edge="end"            

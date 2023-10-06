@@ -1,6 +1,6 @@
 // importing libraries
 import { Link } from "react-router-dom";
-import { useDispatch,useSelector } from 'react-redux';
+import { connect, useDispatch,useSelector } from 'react-redux';
 import { toast } from "react-toastify";
 
 // importing MUI component
@@ -18,17 +18,15 @@ import Typography from '@mui/material/Typography';
 import { deleteProductInDB } from '../features';
 
 
-const Products = () => {
-
-  const dispatch = useDispatch()
-  const products= useSelector(state => state.products.list);
+const Products = (props) => {
+  const {products, deleteProductFromlist } = props
   const defaultImg = 'https://png.pngtree.com/template/20220419/ourmid/pngtree-photo-coming-soon-abstract-admin-banner-image_1262901.jpg';
   
 // function to delete product
   const handleDeleteClick = (id) => {
     // handles notification
     toast.promise(
-      dispatch(deleteProductInDB(id)),
+      deleteProductFromlist(id),
       {
         pending: 'Product is being deleted..!!',
         success: 'Produuct Deleted..!!',
@@ -122,7 +120,7 @@ const Products = () => {
                         {/* rating star */}
                         <Rating
                           precision={0.1}
-                          value={product.rating}
+                          value={parseInt(product.rating)}
                           sx={{
                             ml: 1,
                             verticalAlign: "sub",
@@ -137,11 +135,11 @@ const Products = () => {
 
                       {/* product price */}
                       <Typography variant="h4" color="text.secondary" fontWeight={500} >
-                        Rs {
+                      &#8377; {
                           // formats price upto 2 decimal
                           Intl
                             .NumberFormat("en-US", { maximumFractionDigits: 2 })
-                            .format(product.price * 31)
+                            .format(product.price * 30)
                         }
                       </Typography>
 
@@ -166,4 +164,17 @@ const Products = () => {
     )
 }
 
-export default Products;
+const mapStateToProps = (state) => {
+  return {
+    products: state.products.list
+  }
+}
+const mapDispatchToProps = (dispatch) => {
+  return {
+    deleteProductFromlist : (productId) =>  dispatch(deleteProductInDB(productId)) ,
+    
+    
+  }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(Products);

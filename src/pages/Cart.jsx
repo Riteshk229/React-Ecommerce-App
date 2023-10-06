@@ -161,7 +161,7 @@ const Cart = (props) => {
                     mb={2} ml={2}
                     noWrap>
                         
-                    Rs
+                    &#8377;
 
                     <Typography
                       variant='h6'
@@ -172,7 +172,7 @@ const Cart = (props) => {
                       {Intl
                         .NumberFormat("en-US", { maximumFractionDigits: 2 })
                         .format(
-                          item.product.price * 31
+                          item.product.price * 30
                         )}
                     </Typography>
 
@@ -263,7 +263,7 @@ const Cart = (props) => {
               <Typography
                 variant=""
                 mr={3}>
-                Rs
+                &#8377;
               </Typography>
               
               {/* formatting price */}
@@ -271,7 +271,7 @@ const Cart = (props) => {
                 .NumberFormat("en-US", { maximumFractionDigits: 2 })
                 .format(
                   products.reduce((total, item) => total + item.product.price * item.quantity, 0)
-                  * 31)
+                *30 )
               }
             </Typography>
             {/* sub total start ends*/}

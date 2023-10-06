@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 // importing React-redux methods
-import { useDispatch, useSelector } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 
 // importing MUI components and styles
 import Box from '@mui/material/Box';
@@ -40,6 +40,7 @@ import {
 // for notification
 import { toast } from "react-toastify";
 
+
 // for uploading Image
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -54,15 +55,18 @@ const VisuallyHiddenInput = styled('input')({
   });
   
 
-const Product = () => {
+const Product = (props) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const { isLoading,
+        product,
+        edit,
+        addToCart 
+    } = props;
 
     // state variables
     const [added, setAdded] = useState(false);
     const  productID  = parseInt(useParams().productID);
-    const isLoading = useSelector(state => state.product.loading);
-    const product = useSelector(state => state.product.product);
     const err = useSelector(state => state.product.error);
     const [editModeActive, setEditModeActive] = useState(false);
     const [title, setTitle] = useState(product.title);
@@ -73,10 +77,12 @@ const Product = () => {
      
     useEffect(() => {
           
-        dispatch(fetchProductFromDB(productID));
-        if (err.status) {
-            toast.error(`${err.message}`)
-            navigate('/');
+        if (productID !== product.id) {            
+            dispatch(fetchProductFromDB(productID));
+            if (err.status) {
+                toast.error(`${err.message}`)
+                navigate('/');
+            }
         }
 
         // setting up edit variables
@@ -86,7 +92,7 @@ const Product = () => {
         setRating(product.rating);    
         setDescription(product.description);
           
-    }, [editModeActive,dispatch]);
+    }, [editModeActive,product,dispatch]);
 
     // function to handle add to cart action
     const handleAddToCart = (productID) => {
@@ -96,7 +102,7 @@ const Product = () => {
         }
         
         // notification
-        dispatch(addItemIncart(productID))
+        addToCart(productID);
 
         // notification
         toast.success("Product added to Cart..!!");
@@ -111,28 +117,33 @@ const Product = () => {
     }
 
     // function to handle submit button click
-    const handleSubmit = () => {
+    const handleSubmit = (productId) => {
         // new product
         const editedProduct = {
             title: title,
-            price: price,
+            price: parseFloat(price.replace(/,/g,""))/30,
             description: description,
             rating: rating,
             image: !image
                 ? "https://png.pngtree.com/template/20220419/ourmid/pngtree-photo-coming-soon-abstract-admin-banner-image_1262901.jpg"
                 : image 
         }
+        console.log("[pr", product);
+        console.log("edi", editedProduct);
 
         // notification
         toast.promise(
             // dispatch edit action
-            dispatch(editProductOnDB({ editedProduct, productID })),
+            edit(editedProduct,productID),
             {
                 pending: 'Edit en route..!!',
                 success: 'Edit Successfull..!!',
                 error: 'Error in editing product..!!!'
               }
         )
+
+        // reload product list
+        dispatch(fetchProductsFromDB());
         
         setEditModeActive(false);
     }
@@ -141,7 +152,6 @@ const Product = () => {
     if (isLoading) {
         return <Loader/>
     }
-
     return (
         <>
             
@@ -236,12 +246,12 @@ const Product = () => {
                                     <InputLabel  sx={{fontWeight : 600, fontSize:20}}> Product Price </InputLabel>
                                     <Input
                                         name = "price"
-                                        startAdornment={<InputAdornment position="start"> Rs </InputAdornment>}
+                                        startAdornment={<InputAdornment position="start"> &#8377; </InputAdornment>}
                                         defaultValue={Intl
                                             .NumberFormat("en-US", { maximumFractionDigits: 2 })
-                                            .format(price * 31)
+                                            .format(price * 30)
                                         }
-                                        onChange={(e)=>setPrice(Math.floor(e.target.value)/31)}
+                                        onChange={(e)=>setPrice(e.target.value)}
                                     />
                                 </FormControl>
                                 {/* product price end */}
@@ -278,7 +288,7 @@ const Product = () => {
 
                                 {/* Save button start */}
                                 <IconButton
-                                    onClick={()=>handleSubmit()}
+                                    onClick={()=>handleSubmit(productID)}
                                     size="large"
                                 >
                                     <SaveOutlinedIcon fontSize="large" color="info" />
@@ -345,10 +355,11 @@ const Product = () => {
                                     color="text.tertiary"
                                     fontWeight={600}
                                 >
-                                    Rs {Intl
+                                    &#8377; &nbsp;
+                                    {Intl
                                         // formating price upto 2 decimals
                                         .NumberFormat("en-US", { maximumFractionDigits: 2 })                                        
-                                        .format(product.price * 31
+                                        .format(product.price * 30
                                     )}   
                                 </Typography>
                                 {/* product price end */}
@@ -362,7 +373,7 @@ const Product = () => {
                                     {/* display stars */}
                                     <Rating                                                  
                                         precision={0.1}
-                                        value={product.rating}
+                                        value={parseInt(product.rating)}
                                         sx={{                                                       
                                             ml: 1,
                                             verticalAlign: "sub",
@@ -433,4 +444,23 @@ const Product = () => {
     )
 }
 
-export default Product;
+
+
+const mapStateToProps = (state) => {
+    return {
+        product: state.product.product,
+        isloading: state.product.loading,
+
+    }
+}
+  
+const mapDispatchToProps = (dispatch) => {
+    return {
+        fetchProduct: (productId) => dispatch(fetchProductFromDB(productId)),
+        addToCart: (productID) => dispatch(addItemIncart(productID)),
+        edit: (editedProduct, productID ) => dispatch(editProductOnDB({ editedProduct, productID }))
+
+    }
+  }
+  
+  export default connect(mapStateToProps,mapDispatchToProps)(Product);

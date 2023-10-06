@@ -60,7 +60,7 @@ const Home = ({sortBy,reset}) => {
 
         } else {
             // dispatch sort by price action
-            reset()
+            reset();
              // notification
             toast.success(`Order Back to default..!!`);
 
@@ -104,7 +104,7 @@ const Home = ({sortBy,reset}) => {
                             }
                         }}
                         onClick={() => {
-                            dispatch(resetState());
+                           reset();
                             toast.success(`Order Back to default..!!`);
                             setOptionValue("");
                             setXVisible(false);

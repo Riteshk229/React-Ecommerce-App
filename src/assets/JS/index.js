@@ -45,7 +45,7 @@ export async function getProduct(productID) {
 
 // sending edit request to API
 export async function editProduct(editedProduct,productID) {
-    return await axios.patch(`${API_ROOT}/products/${productID}`, { ...editedProduct })
+    return await axios.patch(`${API_ROOT}/products/${productID}`, {...editedProduct})
     .then(response => { 
         return {
                success: true,
